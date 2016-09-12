@@ -174,7 +174,7 @@ bool Clause::createAndAddUnknownClause(
         clause->print(cout, db->getDomain());
         cout << endl;
       }
-      MRF::addUnknownGndClause(agcs, this, clause, isHardClause_);
+      MRF::addUnknownGndClause(agcs, this, clause, isHardClause_, db);
     }
     
     // MARC: The case with unknownGndClauses appears to be obsolete!

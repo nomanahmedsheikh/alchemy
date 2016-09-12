@@ -1913,7 +1913,7 @@ class Clause
                                 bool const & getSatisfied)                                
   {
     // gndPredIdx is index of predicate Smoke in Clause "!Smokes(a1) v Cancer(a1)""   //added By Noman
-    // groundPred = "Smokes"                                                          //added By Noman
+    // groundPred = "Smokes(A)"                                                          //added By Noman
     assert(unknownGndClauses == NULL || unknownClauses == NULL);
     assert(groundPred == NULL || gndPred == NULL);
       // Assert if activeGroundClauses isn't NULL, then others are and
@@ -2160,7 +2160,7 @@ class Clause
             // Getting unknown clauses / counts
           else
           {
-            /*
+            
               // if literal or subsequent grounded literals are true,
             if (literalOrSubsequentLiteralsAreTrue(lit, ivg->subseqGndLits, db))
             {
@@ -2178,7 +2178,7 @@ class Clause
               }
               numTrueGndings += numComb;
             }
-            else*/
+            else
             if (findUnknownClauses && 
                 bannedPredsAreGndedAsGndPred(ivg->bannedPreds, groundPred,
                                              gndPred))
@@ -2201,7 +2201,7 @@ class Clause
                 //either unknown or false (have truth values opposite of their
                 //senses).
               bool twoLitWithOppSense = false;
-              /*
+              
               if (hasUnknownPreds)
               {
                 if (hasTwoLiteralsWithOppSense(db)) 
@@ -2211,7 +2211,7 @@ class Clause
                   if (checkSatOnly) return 1;
                 }
               }
-              */
+              
               if (!twoLitWithOppSense && findUnknownClauses)
               {
                 assert(!containsGndPredBeforeIdx(gndPredIdx, groundPred,

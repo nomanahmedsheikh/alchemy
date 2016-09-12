@@ -216,7 +216,7 @@ class GroundPredicate
 	  }	
 	  return strPredName;
   }
-  string getPredName(const Domain* const& domain) 
+  string getPredName(const Domain* const& domain) const
   {
 	  string s = string(domain->getPredicateName((*intArrRep_)[0]));
 	  return s;

@@ -224,7 +224,7 @@ class MRF
         //cout<<"\tAdded the clause..."<<endl;
     	try
         {
-          //pred = Smokes, c=!Smokes(a1)v Cancer(a1), genClausesForAllPredGndings=False      //added by Noman
+          //pred = Smokes(A), c=!Smokes(a1)v Cancer(a1), genClausesForAllPredGndings=False      //added by Noman
           addUnknownGndClauses(pred, c, domain, db, genClausesForAllPredGndings,
                                &agc);
         }
@@ -323,7 +323,7 @@ class MRF
   static void addUnknownGndClause(const AddGroundClauseStruct* const & agcs, 
                                   const Clause* const & clause,
                                   const Clause* const & truncClause,
-                                  const bool& isHardClause)
+                                  const bool& isHardClause, const Database *db)
   {
     const GroundPredicateSet* seenPreds     = agcs->seenPreds;
     GroundPredicateSet*       unseenPreds   = agcs->unseenPreds;
@@ -360,6 +360,21 @@ class MRF
     if (seenBefore) return;
 
     GroundClause* gndClause = new GroundClause(truncClause, gndPreds);
+
+    // we don't want to add ground clause which only contains subtype predicates because that means rest of the formula was false.
+    bool allPredsSubtype = true;
+    for(int i = 0 ; i < gndClause->getNumGroundPredicates() ; i++)
+    {
+      const GroundPredicate* gp = gndClause->getGroundPredicate(i, gndPreds);
+      if(gp->getPredName(db->getDomain()) != "subtype")
+      {
+        allPredsSubtype = false;
+        break;
+      }
+    }
+    if(allPredsSubtype)
+      return;
+
     if (markHardGndClauses && isHardClause) gndClause->setWtToHardWt();
     assert(gndClause->getWt() != 0);
 
@@ -479,6 +494,7 @@ class MRF
  private:
   GroundPredicateHashArray* gndPreds_;
   Array<GroundClause*>* gndClauses_;
+  Array<int>* countClauseGroundings_; // countClauseGroundings_[c] is the number of 
   //Array<GroundFormula*>* gndFormulas_;
 };
 
