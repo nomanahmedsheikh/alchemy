@@ -397,7 +397,7 @@ depend:
 
 ############ Everything below here is subject to SUDDEN DEATH #####
 #
-# dependencies generated on:  Mon Sep 12 21:12:47 IST 2016
+# dependencies generated on:  Mon Sep 12 21:52:33 IST 2016
 #
 ../bin/obj/arguments.o: ../src/util/arguments.cpp ../src/util/arguments.h
 
@@ -419,13 +419,14 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/logic/database.h \
- ../src/parser/follex.cpp ../src/parser/folhelper.h \
- ../src/parser/strfifolist.h ../src/logic/function.h \
- ../src/logic/clause.h ../src/logic/clausefactory.h \
- ../src/parser/listobj.h ../src/util/timer.h ../src/parser/internals.h
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/logic/database.h ../src/parser/follex.cpp \
+ ../src/parser/folhelper.h ../src/parser/strfifolist.h \
+ ../src/logic/function.h ../src/logic/clause.h \
+ ../src/logic/clausefactory.h ../src/parser/listobj.h ../src/util/timer.h \
+ ../src/parser/internals.h
 
 ../bin/obj/listobj.o: ../src/parser/listobj.cpp ../src/parser/listobj.h \
  ../src/util/array.h ../src/util/random.h ../src/util/hashstring.h \
@@ -475,8 +476,9 @@ depend:
  ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h
 
 ../bin/obj/term.o: ../src/logic/term.cpp ../src/logic/term.h ../src/util/array.h \
  ../src/util/random.h ../src/logic/function.h \
@@ -499,9 +501,9 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h ../src/logic/mln.h \
- ../src/logic/mlnhelper.h
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mln.h ../src/logic/mlnhelper.h
 
 ../bin/obj/clause.o: ../src/logic/clause.cpp ../src/logic/clause.h \
  ../src/logic/domain.h ../src/util/equalstr.h ../src/util/dualmap.h \
@@ -516,9 +518,10 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h ../src/infer/mrf.h \
- ../src/util/timer.h ../src/logic/mln.h ../src/logic/mlnhelper.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/infer/mrf.h ../src/util/timer.h \
+ ../src/logic/mln.h ../src/logic/mlnhelper.h \
  ../src/infer/groundpredicate.h ../src/infer/variable.h \
  ../src/util/util.h ../src/infer/superclause.h ../src/infer/mrf.h \
  ../src/infer/variable.h ../src/infer/hypercube.h \
@@ -536,11 +539,11 @@ depend:
  ../src/util/equalstr.h ../src/util/constdualmap.h ../src/util/strint.h \
  ../src/util/arraysaccessor.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clause.h ../src/util/hashstring.h \
- ../src/util/hasharray.h ../src/util/hashlist.h ../src/util/powerset.h \
- ../src/util/multdarray.h ../src/util/hashint.h ../src/util/hash.h \
- ../src/logic/clausehelper.h
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clause.h ../src/util/hashstring.h ../src/util/hasharray.h \
+ ../src/util/hashlist.h ../src/util/powerset.h ../src/util/multdarray.h \
+ ../src/util/hashint.h ../src/util/hash.h ../src/logic/clausehelper.h
 
 ../bin/obj/groundclause.o: ../src/infer/groundclause.cpp ../src/infer/groundclause.h \
  ../src/util/hasharray.h ../src/util/random.h ../src/util/array.h \
@@ -549,8 +552,9 @@ depend:
  ../src/util/equalstr.h ../src/util/constdualmap.h ../src/util/strint.h \
  ../src/logic/predicatetemplate.h ../src/logic/functiontemplate.h \
  ../src/logic/predicate.h ../src/logic/term.h ../src/logic/function.h \
- ../src/logic/predicate.h ../src/logic/clause.h ../src/logic/domain.h \
- ../src/util/hashstring.h ../src/util/hasharray.h ../src/util/hashlist.h \
+ ../src/logic/predicate.h ../src/infer/groundformula.h \
+ ../src/logic/clause.h ../src/logic/domain.h ../src/util/hashstring.h \
+ ../src/util/hasharray.h ../src/util/hashlist.h \
  ../src/util/arraysaccessor.h ../src/util/powerset.h \
  ../src/util/multdarray.h ../src/util/hashint.h ../src/util/hash.h \
  ../src/logic/database.h ../src/logic/groundpreds.h \
@@ -573,9 +577,10 @@ depend:
  ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h ../src/learnwts/lbfgsb.h ../src/util/timer.h \
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h \
+ ../src/learnwts/lbfgsb.h ../src/util/timer.h \
  ../src/learnwts/pseudologlikelihood.h ../src/logic/mln.h \
  ../src/logic/clause.h ../src/logic/mlnhelper.h \
  ../src/learnwts/indextranslator.h ../src/logic/Polynomial.h \
@@ -675,24 +680,25 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/logic/database.h ../src/util/arguments.h \
- ../src/util/util.h ../src/infer/infer.h ../src/infer/mrf.h \
- ../src/util/timer.h ../src/infer/groundpredicate.h \
- ../src/learnwts/learnwts.h ../src/learnwts/indextranslator.h \
- ../src/infer/inferenceargs.h ../src/infer/inferutil.h \
- ../src/logic/clause.h ../src/infer/maxwalksat.h ../src/infer/sat.h \
- ../src/infer/inference.h ../src/logic/variablestate.h ../src/infer/mrf.h \
- ../src/logic/hvariablestate.h ../src/logic/Polynomial.h \
- ../src/learnwts/lbfgsp.h ../src/logic/Polynomial.h \
- ../src/logic/logsigmoid.h ../src/logic/logichelper.h \
- ../src/infer/maxwalksatparams.h ../src/infer/samplesatparams.h \
- ../src/infer/mcsat.h ../src/infer/mcmc.h ../src/infer/mcmcparams.h \
- ../src/infer/mcsatparams.h ../src/infer/unitpropagation.h \
- ../src/infer/gibbssampler.h ../src/infer/gibbsparams.h \
- ../src/infer/convergencetest.h ../src/util/meanvariance.h \
- ../src/infer/gelmanconvergencetest.h ../src/infer/simulatedtempering.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/logic/database.h ../src/util/arguments.h ../src/util/util.h \
+ ../src/infer/infer.h ../src/infer/mrf.h ../src/util/timer.h \
+ ../src/infer/groundpredicate.h ../src/learnwts/learnwts.h \
+ ../src/learnwts/indextranslator.h ../src/infer/inferenceargs.h \
+ ../src/infer/inferutil.h ../src/logic/clause.h ../src/infer/maxwalksat.h \
+ ../src/infer/sat.h ../src/infer/inference.h ../src/logic/variablestate.h \
+ ../src/infer/mrf.h ../src/logic/hvariablestate.h \
+ ../src/logic/Polynomial.h ../src/learnwts/lbfgsp.h \
+ ../src/logic/Polynomial.h ../src/logic/logsigmoid.h \
+ ../src/logic/logichelper.h ../src/infer/maxwalksatparams.h \
+ ../src/infer/samplesatparams.h ../src/infer/mcsat.h ../src/infer/mcmc.h \
+ ../src/infer/mcmcparams.h ../src/infer/mcsatparams.h \
+ ../src/infer/unitpropagation.h ../src/infer/gibbssampler.h \
+ ../src/infer/gibbsparams.h ../src/infer/convergencetest.h \
+ ../src/util/meanvariance.h ../src/infer/gelmanconvergencetest.h \
+ ../src/infer/simulatedtempering.h \
  ../src/infer/simulatedtemperingparams.h ../src/infer/bp.h \
  ../src/infer/bpparams.h ../src/infer/twowaymessage.h \
  ../src/infer/superclause.h ../src/infer/variable.h \
@@ -718,15 +724,16 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/logic/database.h \
- ../src/learnwts/learnwts.h ../src/util/util.h ../src/util/timer.h \
- ../src/learnwts/indextranslator.h ../src/learnstruct/structlearn.h \
- ../src/logic/clausefactory.h ../src/learnwts/lbfgsb.h \
- ../src/learnwts/pseudologlikelihood.h ../src/logic/clause.h \
- ../src/logic/Polynomial.h ../src/learnwts/discriminativelearner.h \
- ../src/infer/infer.h ../src/infer/mrf.h ../src/infer/groundpredicate.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/logic/database.h ../src/learnwts/learnwts.h ../src/util/util.h \
+ ../src/util/timer.h ../src/learnwts/indextranslator.h \
+ ../src/learnstruct/structlearn.h ../src/logic/clausefactory.h \
+ ../src/learnwts/lbfgsb.h ../src/learnwts/pseudologlikelihood.h \
+ ../src/logic/clause.h ../src/logic/Polynomial.h \
+ ../src/learnwts/discriminativelearner.h ../src/infer/infer.h \
+ ../src/infer/mrf.h ../src/infer/groundpredicate.h \
  ../src/infer/inferenceargs.h ../src/infer/inferutil.h \
  ../src/infer/maxwalksat.h ../src/infer/sat.h ../src/infer/inference.h \
  ../src/logic/variablestate.h ../src/infer/mrf.h \
@@ -770,9 +777,9 @@ depend:
  ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h
 
 ../bin/obj/createhypercube.o: ../src/infer/createhypercube.cpp \
  ../src/infer/hypercube.h ../src/util/util.h ../src/util/array.h \
@@ -788,10 +795,11 @@ depend:
  ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h ../src/infer/hypercuberefinement.h \
- ../src/logic/mln.h ../src/logic/clause.h ../src/logic/mlnhelper.h \
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h \
+ ../src/infer/hypercuberefinement.h ../src/logic/mln.h \
+ ../src/logic/clause.h ../src/logic/mlnhelper.h \
  ../src/infer/hypercubeoperations.h ../src/infer/hypercubereverseindex.h \
  ../src/infer/mrf.h ../src/util/timer.h ../src/infer/groundpredicate.h
 
@@ -809,10 +817,11 @@ depend:
  ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h ../src/infer/hypercuberefinement.h \
- ../src/logic/mln.h ../src/logic/clause.h ../src/logic/mlnhelper.h
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h \
+ ../src/infer/hypercuberefinement.h ../src/logic/mln.h \
+ ../src/logic/clause.h ../src/logic/mlnhelper.h
 
 ../bin/obj/createhypercubedt.o: ../src/infer/createhypercubedt.cpp \
  ../src/util/hashint.h ../src/util/hasharray.h ../src/util/random.h \
@@ -827,9 +836,10 @@ depend:
  ../src/util/powerset.h ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h ../src/infer/hypercube.h ../src/util/util.h \
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h \
+ ../src/infer/hypercube.h ../src/util/util.h \
  ../src/infer/hypercuberefinement.h ../src/logic/mln.h \
  ../src/logic/clause.h ../src/logic/mlnhelper.h
 
@@ -846,14 +856,15 @@ depend:
  ../src/util/powerset.h ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h ../src/infer/hypercubereverseindex.h \
- ../src/infer/mrf.h ../src/util/timer.h ../src/logic/mln.h \
- ../src/logic/clause.h ../src/logic/mlnhelper.h \
- ../src/infer/groundpredicate.h ../src/infer/partialgndhctuple.h \
- ../src/infer/hypercubeoperations.h ../src/infer/hypercuberefinement.h \
- ../src/infer/superclause.h ../src/infer/variable.h
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h \
+ ../src/infer/hypercubereverseindex.h ../src/infer/mrf.h \
+ ../src/util/timer.h ../src/logic/mln.h ../src/logic/clause.h \
+ ../src/logic/mlnhelper.h ../src/infer/groundpredicate.h \
+ ../src/infer/partialgndhctuple.h ../src/infer/hypercubeoperations.h \
+ ../src/infer/hypercuberefinement.h ../src/infer/superclause.h \
+ ../src/infer/variable.h
 
 ../bin/obj/refinehypercube.o: ../src/infer/refinehypercube.cpp ../src/util/util.h \
  ../src/infer/hypercube.h ../src/util/array.h ../src/util/random.h \
@@ -868,10 +879,11 @@ depend:
  ../src/util/powerset.h ../src/util/multdarray.h ../src/logic/database.h \
  ../src/logic/groundpreds.h ../src/infer/groundpredicate.h \
  ../src/logic/domain.h ../src/logic/predicate.h \
- ../src/infer/groundclause.h ../src/logic/clausesampler.h \
- ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
- ../src/logic/clausehelper.h ../src/infer/hypercuberefinement.h \
- ../src/logic/mln.h ../src/logic/clause.h ../src/logic/mlnhelper.h
+ ../src/infer/groundclause.h ../src/infer/groundformula.h \
+ ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
+ ../src/util/random.h ../src/logic/clausehelper.h \
+ ../src/infer/hypercuberefinement.h ../src/logic/mln.h \
+ ../src/logic/clause.h ../src/logic/mlnhelper.h
 
 ../bin/obj/superpred.o: ../src/infer/superpred.cpp ../src/util/util.h \
  ../src/infer/mrf.h ../src/util/timer.h ../src/logic/mln.h \
@@ -887,11 +899,12 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/infer/groundpredicate.h \
- ../src/infer/superclause.h ../src/infer/variable.h \
- ../src/infer/hypercube.h ../src/infer/inferutil.h ../src/logic/clause.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/infer/groundpredicate.h ../src/infer/superclause.h \
+ ../src/infer/variable.h ../src/infer/hypercube.h \
+ ../src/infer/inferutil.h ../src/logic/clause.h \
  ../src/infer/hypercubeoperations.h ../src/infer/hypercubereverseindex.h \
  ../src/infer/hypercuberefinement.h ../src/infer/superpred.h \
  ../src/infer/clausecounter.h
@@ -910,11 +923,12 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/infer/groundpredicate.h \
- ../src/infer/superclause.h ../src/infer/variable.h \
- ../src/infer/hypercube.h ../src/infer/inferutil.h ../src/logic/clause.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/infer/groundpredicate.h ../src/infer/superclause.h \
+ ../src/infer/variable.h ../src/infer/hypercube.h \
+ ../src/infer/inferutil.h ../src/logic/clause.h \
  ../src/infer/hypercubeoperations.h ../src/infer/hypercubereverseindex.h \
  ../src/infer/hypercuberefinement.h ../src/infer/superpred.h \
  ../src/infer/clausecounter.h
@@ -933,12 +947,13 @@ depend:
  ../src/util/hash.h ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/infer/groundpredicate.h \
- ../src/infer/link.h ../src/infer/superpred.h \
- ../src/infer/clausecounter.h ../src/infer/inferutil.h \
- ../src/logic/clause.h ../src/infer/superclause.h ../src/infer/variable.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/infer/groundpredicate.h ../src/infer/link.h \
+ ../src/infer/superpred.h ../src/infer/clausecounter.h \
+ ../src/infer/inferutil.h ../src/logic/clause.h \
+ ../src/infer/superclause.h ../src/infer/variable.h \
  ../src/infer/hypercube.h ../src/infer/hypercubeoperations.h \
  ../src/infer/hypercubereverseindex.h ../src/infer/hypercuberefinement.h \
  ../src/infer/twowaymessage.h ../src/infer/factor.h
@@ -958,12 +973,13 @@ depend:
  ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/infer/groundpredicate.h \
- ../src/infer/link.h ../src/infer/node.h ../src/infer/superpred.h \
- ../src/infer/clausecounter.h ../src/infer/inferutil.h \
- ../src/logic/clause.h ../src/infer/superclause.h ../src/infer/variable.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/infer/groundpredicate.h ../src/infer/link.h ../src/infer/node.h \
+ ../src/infer/superpred.h ../src/infer/clausecounter.h \
+ ../src/infer/inferutil.h ../src/logic/clause.h \
+ ../src/infer/superclause.h ../src/infer/variable.h \
  ../src/infer/hypercube.h ../src/infer/hypercubeoperations.h \
  ../src/infer/hypercubereverseindex.h ../src/infer/hypercuberefinement.h \
  ../src/infer/twowaymessage.h
@@ -984,10 +1000,11 @@ depend:
  ../src/logic/database.h ../src/logic/groundpreds.h \
  ../src/infer/groundpredicate.h ../src/logic/domain.h \
  ../src/logic/predicate.h ../src/infer/groundclause.h \
- ../src/logic/clausesampler.h ../src/logic/truefalsegroundingsstore.h \
- ../src/util/random.h ../src/logic/clausehelper.h \
- ../src/logic/mlnhelper.h ../src/logic/variablestate.h ../src/infer/mrf.h \
- ../src/util/timer.h ../src/infer/groundpredicate.h \
+ ../src/infer/groundformula.h ../src/logic/clausesampler.h \
+ ../src/logic/truefalsegroundingsstore.h ../src/util/random.h \
+ ../src/logic/clausehelper.h ../src/logic/mlnhelper.h \
+ ../src/logic/variablestate.h ../src/infer/mrf.h ../src/util/timer.h \
+ ../src/infer/groundpredicate.h \
  ../src/liftedinfer/common/includes/lvrmln.h \
  ../src/liftedinfer/common/includes/logdouble.h \
  ../src/liftedinfer/common/includes/paramconstants.h \

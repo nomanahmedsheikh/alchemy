@@ -71,7 +71,7 @@
 #include "mcmcparams.h"
 
   // Set to true for more output
-const bool mcmcdebug = true; // changed from false to true by Happy
+const bool mcmcdebug = false; // changed from false to true by Happy
 
 /**
  * Superclass of all MCMC inference algorithms. This class does not implement

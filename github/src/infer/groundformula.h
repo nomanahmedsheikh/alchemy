@@ -64,8 +64,8 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-#ifndef GROUNDCLAUSE_H_JUN_26_2005
-#define GROUNDCLAUSE_H_JUN_26_2005
+#ifndef GROUNDFORMULA_H_JUN_26_2005
+#define GROUNDFORMULA_H_JUN_26_2005
 
 #include <cfloat>
 #include <ext/hash_set>
@@ -85,14 +85,15 @@ typedef IntBoolPair::iterator IntBoolPairItr;
 
 // Constants
 //const double HARD_GROUNDCLAUSE_WT = DBL_MAX;
-const double HARD_GROUNDCLAUSE_WT = 100;
-const bool gcdebug = false;
+const double HARD_GROUNDFORMULA_WT = 100;
+const bool gfdebug = false;
 
 // Forward declarations
 class MLN;
 class Domain;
 class Clause;
 class GroundPredicate;
+class GroundClause;
 class HashGroundPredicate;
 class EqualGroundPredicate;
 
@@ -103,165 +104,52 @@ typedef HashArray<GroundPredicate*, HashGroundPredicate, EqualGroundPredicate>
 /**
  * Represents a grounded clause.
  */
-class GroundClause
+class GroundFormula
 {
  public:
-  GroundClause(const Clause* const & c,
-               GroundPredicateHashArray* const & gndPredHashArray);
+  GroundFormula(const Array<GroundClause*>* const & gcs);
 
-  ~GroundClause()
+  ~GroundFormula()
   {
-    if (gndPredIndexes_) delete gndPredIndexes_;
-    if (foClauseFrequencies_) delete foClauseFrequencies_;
+    if (gndClauses_) delete gndClauses_;
   }
 
-  void deleteFoClauseFrequencies()
-  {
-    if (foClauseFrequencies_) delete foClauseFrequencies_;
-    foClauseFrequencies_ = NULL;
-  }
 
   void addWt(const double& wt)
-  { if (wt_ == HARD_GROUNDCLAUSE_WT) return; wt_ += wt; }
+  { if (wt_ == HARD_GROUNDFORMULA_WT) return; wt_ += wt; }
 
   void setWt(const double& wt)
-  { if (wt_ == HARD_GROUNDCLAUSE_WT) return; wt_ = wt; }
+  { if (wt_ == HARD_GROUNDFORMULA_WT) return; wt_ = wt; }
 
   double getWt() const { return wt_; }
 
-  void setWtToHardWt() { wt_ = HARD_GROUNDCLAUSE_WT; }
-  bool isHardClause() const { return (wt_ == HARD_GROUNDCLAUSE_WT); }
+  void setWtToHardWt() { wt_ = HARD_GROUNDFORMULA_WT; }
+  bool isHardFormula() const { return (wt_ == HARD_GROUNDFORMULA_WT); }
 
-  int getNumGroundPredicates() const { return gndPredIndexes_->size(); }
+  int getNumGroundClauses() const { return gndClauses_->size(); }
 
-  const GroundPredicate* getGroundPredicate(const int& i,
-                      GroundPredicateHashArray* const & gndPredHashArray) const
+  const GroundClause* getGroundClause(const int& i) const
   {
-    return (*gndPredHashArray)[abs((*gndPredIndexes_)[i]) - 1];
+    return (*gndClauses_)[i];
   }
 
-  /**
-   * Appends this GroundClause to all GroundPredicates in it.
-   *
-   * @param gndPredHashArray Reference HashArray containing the
-   * GroundPredicates indexed in the GroundClause.
-   */
-  void appendToGndPreds(GroundPredicateHashArray* const & gndPredHashArray);
-
-  bool getGroundPredicateSense(const int& i) const
-  { return ((*gndPredIndexes_)[i] > 0); }
-
-  void setGroundPredicateSense(const int& i, const bool& sense)
-  {
-      // Already the sense being set to, then return
-    if ((sense && (*gndPredIndexes_)[i] > 0) ||
-        (!sense && (*gndPredIndexes_)[i] < 0))
-      return;
-
-    (*gndPredIndexes_)[i] = -(*gndPredIndexes_)[i];
-    rehash();
-  }
-
-  void setGroundPredicateIndex(const int& i, const int& gndPredIdx)
-  { (*gndPredIndexes_)[i] = gndPredIdx; }
-
-  int getGroundPredicateIndex(const int& i) const
-  { return (*gndPredIndexes_)[i]; }
-
-  const Array<int>* getGndPredIndexes() const
-  {
-    return gndPredIndexes_;
-  }
-
-  /**
-   * The weight of this ground clause is set to the sum of its parent weights.
-   * If the weight has been inverted from the parent, this is taken into account.
-   *
-   * @param mln Reference MLN to which the clause indices in foClauseFrequencies_
-   * correspond.
-   */
-  void setWtToSumOfParentWts(const MLN* const & mln);
-
-  IntBoolPair *getClauseFrequencies()
-  {
-    return foClauseFrequencies_;
-  }
-
-  int getClauseFrequency(int clauseno)
-  {
-	if (!foClauseFrequencies_) return 0;
-	IntBoolPairItr itr = foClauseFrequencies_->find(clauseno);
-	if (itr == foClauseFrequencies_->end())
-	  return 0;
-	else
-	  return itr->second.first;
-  }
-
-  void incrementClauseFrequency(int clauseno, int increment, bool invertWt)
-  {
-	if (!foClauseFrequencies_)
-      foClauseFrequencies_ = new IntBoolPair;
-	IntBoolPairItr itr = foClauseFrequencies_->find(clauseno);
-	if (itr == foClauseFrequencies_->end())
-	  foClauseFrequencies_->
-        insert(make_pair(clauseno, make_pair(increment, invertWt)));
-	else
-	  itr->second.first += increment;
-  }
-
-  /**
-   * Removes a ground predicate from this ground clause. The ground predicate
-   * at the given index is removed and the new hash code is stored.
-   *
-   * @param gndPred The ground predicate to be removed.
-   */
-  void removeGndPred(const int& gndPred)
-  {
-    for (int i = 0; i < gndPredIndexes_->size(); i++)
-    {
-      if (gndPred == (*gndPredIndexes_)[i])
-      {
-        gndPredIndexes_->removeItem(i);
-        gndPredIndexes_->compress();
-        rehash();
-        break;
-      }
-    }
-  }
-
-  /**
-   * Changes the index of a ground predicate in this ground clause. The new hash
-   * code is stored.
-   *
-   * @param oldIdx Index of the ground predicate to be changed.
-   * @param newIdx New index of the ground predicate.
-   */
-  void changeGndPredIndex(const int& oldIdx, const int& newIdx)
-  {
-    for (int i = 0; i < gndPredIndexes_->size(); i++)
-    {
-      if (oldIdx == (*gndPredIndexes_)[i])
-      {
-        (*gndPredIndexes_)[i] = newIdx;
-        rehash();
-        break;
-      }
-    }
-  }
 
   size_t hashCode() { return hashCode_; }
 
-  bool same(const GroundClause* const & gc)
+  bool same(const GroundFormula* const & gf)
   {
-    if (this == gc) return true;
-    if (gndPredIndexes_->size() != gc->getGndPredIndexes()->size())
+    if (this == gf) return true;
+    if (gndClauses_->size() != gf->getNumGroundClauses())
     {
       return false;
     }
-    //if(parentFormulaId_ != gc->parentFormulaId_){return false;} //added by Happy
-    return (memcmp(gndPredIndexes_->getItems(),
-                   gc->getGndPredIndexes()->getItems(),
-                   (gndPredIndexes_->size())*sizeof(int)) == 0);
+    if(parentFormulaId_ != gf->parentFormulaId_){return false;} //added by Happy
+    for(int c = 0 ; c < gndClauses_->size() ; c++)
+    {
+      if (!(*gndClauses_)[c]->same(gf->getGroundClause(c)))
+        return false;
+    }
+    return true;
   }
 
   void printWithoutWt(ostream& out) const;
@@ -289,7 +177,6 @@ class GroundClause
                                              const Domain* const& domain,
                   const GroundPredicateHashArray* const & predHashArray) const;
 
-  double sizeKB();
 
  private:
 
@@ -300,26 +187,36 @@ class GroundClause
   {
     Array<unsigned int>* intArrRep = new Array<unsigned int>;
 
-      // For each predicate
-    for (int i = 0; i < gndPredIndexes_->size(); i++)
+    // for each clause
+    for(int c = 0 ; c < gndClauses_ ->size(); c++)
     {
-        // For each pred 1 (if pos.) or 0 (if neg.) is appended to intArrRep
-      if ((*gndPredIndexes_)[i] > 0)
-        intArrRep->append(1);
-      else
-        intArrRep->append((unsigned int)0);
-      intArrRep->append(abs((*gndPredIndexes_)[i]));
-    }
 
+      GroundClause* gc = (*gndClauses_)[c];
+
+      // For each predicate
+      for (int i = 0; i < gc->getGndPredIndexes()->size(); i++)
+      {
+          // For each pred 1 (if pos.) or 0 (if neg.) is appended to intArrRep
+        if (gc->getGroundPredicateIndex(i) > 0)
+          intArrRep->append(1);
+        else
+          intArrRep->append((unsigned int)0);
+        intArrRep->append(abs(gc->getGroundPredicateIndex(i)));
+      }
+    }
+    
     hashCode_ = Hash::hash(*intArrRep);
     delete intArrRep;
   }
- //public://added by Happy
-// int parentFormulaId_; //added by Happy
+
+ public://added by Happy
+ int parentFormulaId_; //added by Happy
  private:
     // Hash code of this ground clause
   size_t hashCode_;
-  Array<int>* gndPredIndexes_; // 4 + 4*n bytes (n is no. of preds)
+  Array<GroundClause*>* gndClauses_;
+
+  //Array<int>* gndPredIndexes_; // 4 + 4*n bytes (n is no. of preds)
 
     // overloaded to indicate whether this is a hard clause
     // if this is a hard clause, wt_ is set to HARD_GROUNDCLAUSE_WT
@@ -335,28 +232,29 @@ class GroundClause
 ////////////////////////////////// hash /////////////////////////////////
 
 
-class HashGroundClause
+class HashGroundFormula
 {
  public:
-  size_t operator()(GroundClause* const & gc) const  { return gc->hashCode(); }
+  size_t operator()(GroundFormula* const & gf) const  { return gf->hashCode(); }
 };
 
 
-class EqualGroundClause
+class EqualGroundFormula
 {
  public:
-  bool operator()(GroundClause* const & c1, GroundClause* const & c2) const
-    { return c1->same(c2); }
+  bool operator()(GroundFormula* const & f1, GroundFormula* const & f2) const
+    { return f1->same(f2); }
 };
 
 
 /////////////////////////////// containers  /////////////////////////////////
 
-typedef HashArray<GroundClause*, HashGroundClause, EqualGroundClause>
-  GroundClauseHashArray;
 
-typedef hash_set<GroundClause*, HashGroundClause, EqualGroundClause>
-  GroundClauseSet;
+typedef HashArray<GroundFormula*, HashGroundFormula, EqualGroundFormula>
+  GroundFormulaHashArray;
+
+typedef hash_set<GroundFormula*, HashGroundFormula, EqualGroundFormula>
+  GroundFormulaSet;
 
 
 #endif

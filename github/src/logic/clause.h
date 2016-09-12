@@ -88,7 +88,7 @@ using namespace std;
 
 const bool useInverseIndex = true;
   // 0 = no ouput, 1 = some output, 2 = full output
-const int clausedebug = 2; // changed by Happy from 0 to 2
+const int clausedebug = 0; // changed by Happy from 0 to 2
 
 
 /******************************************************************************/
@@ -266,7 +266,7 @@ class Clause
     const Array<int>* cArr  = c->getIntArrRep();
     const Array<int>* myArr = getIntArrRep();
     if (myArr->size() != cArr->size()) return false;
-    //if (parentFormulaId_ != c->parentFormulaId_) return false;
+    //if (parentFormulaId_ != c->parentFormulaId_) return false; //added by Happy
     const int* cItems  = c->getIntArrRep()->getItems();
     const int* myItems = getIntArrRep()->getItems();
     return (memcmp(myItems, cItems, myArr->size()*sizeof(int))==0);

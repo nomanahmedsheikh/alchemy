@@ -171,8 +171,8 @@ class MRF
       GroundPredicateSet::iterator predIt = unseenPreds.begin();
       GroundPredicate* pred = *predIt;
       unsigned int predId = pred->getId();
-      cout << "\tlooking at pred: ";  pred->print(cout, domain); cout << " with predId : "<<predId<<endl; //added by Happy
-      cout << "(*allPredGndingsAreQueries)[predId] : "<<(*allPredGndingsAreQueries)[predId]<<endl; //added by Happy
+      //cout << "\tlooking at pred: ";  pred->print(cout, domain); cout << " with predId : "<<predId<<endl; //added by Happy
+//      cout << "(*allPredGndingsAreQueries)[predId] : "<<(*allPredGndingsAreQueries)[predId]<<endl; //added by Happy
       bool genClausesForAllPredGndings = false;
         // if all groundings of predicate with predId are queries
       if (allPredGndingsAreQueries && (*allPredGndingsAreQueries)[predId] >= 1)
@@ -203,9 +203,9 @@ class MRF
       for (int i = 0; clauses && i < clauses->size(); i++)
       {
         Clause* c = (*clauses)[i]->clause;
-        cout << "\tIn clause c: ";  c->printWithWtAndStrVar(cout, domain); cout << endl; //added by Happy
+        //cout << "\tIn clause c: ";  c->printWithWtAndStrVar(cout, domain); cout << endl; //added by Happy
         //const int formulaId = c->parentFormulaId_;
-        //cout<<"In formula : "<<((*(mln->getFormulaAndClausesArray()))[formulaId])->formula<<endl; //added by Happy
+//        cout<<"In formula : "<<((*(mln->getFormulaAndClausesArray()))[formulaId])->formula<<endl; //added by Happy
 		    const int clauseId = mln->findClauseIdx(c);  
 		    assert(clauseId >= 0);
 		    //cout<<"\tclause id : " << clauseId <<endl; //added by Happy
@@ -457,7 +457,7 @@ class MRF
         //pred is Smoke and All Terms are different Variables. hence this if conditon is satisfied //added by Noman
         if (c->getPredicate(i)->canBeGroundedAs(queryGndPred))
         {
-          cout<<"c->getPredicate("<<i<<")"<<c->getPredicate(i)->getName()<<", calling addUnknownClauses..."<<endl; // added by Happy
+          //cout<<"c->getPredicate("<<i<<")"<<c->getPredicate(i)->getName()<<", calling addUnknownClauses..."<<endl; // added by Happy
           c->addUnknownClauses(domain, db, i, queryGndPred, agcs);
         }
       }

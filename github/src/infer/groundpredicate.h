@@ -70,6 +70,7 @@
 #include "domain.h"
 #include "predicate.h"
 #include "groundclause.h"
+#include "groundformula.h"
 
 class GroundPredicate
 {

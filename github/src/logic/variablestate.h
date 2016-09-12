@@ -3334,6 +3334,8 @@ class VariableState
 
     // Holds the new active clauses
   Array<GroundClause*> newClauses_;
+   // Holds the new active ground formulas
+  Array<GroundFormula*> newFormulas_;
     // Holds the new gnd preds
   Array<GroundPredicate*> newPreds_;
     // Holds the ground predicates in a hash array.

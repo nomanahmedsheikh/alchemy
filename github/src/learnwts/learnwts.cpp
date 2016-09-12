@@ -1419,7 +1419,7 @@ int main(int argc, char* argv[])
 
       // If tied clauses, then fill out the wts array with zeros
     wts.growToSize(numClausesFormulas + 1);
-    //   cout<<"wts size : "<<wts.size()<<endl; //added by happy
+    //cout<<"wts size : "<<wts.size()<<endl; //added by happy
     Array<double> wtsAfterTiedClauses;
     wtsAfterTiedClauses.growToSize(numClausesFormulas + 1);
     int idxOffset = 0;

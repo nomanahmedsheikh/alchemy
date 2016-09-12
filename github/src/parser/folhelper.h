@@ -2647,8 +2647,8 @@ void zzappendFormulaClausesToMLN(const ListObj* const & formula,
                                  Clause*& flippedClause,
                                  const Domain* const & domain0)
 {
-  cout << "orig formula = " << endl << "\t: " << formulaStr << endl; //uncommented by happy
-  cout << "formula      = " << endl << "\t: " << *formula << endl; //uncommented by happy
+  //cout << "orig formula = " << endl << "\t: " << formulaStr << endl; //uncommented by happy
+//  cout << "formula      = " << endl << "\t: " << *formula << endl; //uncommented by happy
 
   VarTypeMap* vtMap = zzcreateVarTypeMap(varNameToIdMap);
   Array<ListObj*> formulas;
@@ -2659,7 +2659,7 @@ void zzappendFormulaClausesToMLN(const ListObj* const & formula,
 
   for (int f = 0; f < formulas.size(); f++)
   {
-    cout<<"formula (after gnding '+')= "<<endl<<"\t: "<< *(formulas[f])<<endl;//uncommented by happy
+    //cout<<"formula (after gnding '+')= "<<endl<<"\t: "<< *(formulas[f])<<endl;//uncommented by happy
 
     Array<ListObj*> formulas2;
     Array<string> formulaStrs2;
@@ -2671,22 +2671,22 @@ void zzappendFormulaClausesToMLN(const ListObj* const & formula,
     {
       string formStr = formulaStrs2[g];
 
-      cout << "formula (after *) " << endl << "\t: " << *(formulas2[g])<<endl;//uncommented by happy
+      //cout << "formula (after *) " << endl << "\t: " << *(formulas2[g])<<endl;//uncommented by happy
       ListObj* vars = new ListObj;
       bool hasExist = false;
       ListObj* cnf = ListObj::toCNF(formulas2[g], vars, domain, vtMap, hasExist);
       delete formulas2[g];
-      cout << "cnf = " << endl << "\t: " << *cnf << endl; //uncommented by happy
+      //cout << "cnf = " << endl << "\t: " << *cnf << endl; //uncommented by happy
 
       cnf->cleanUpVars();
-      cout << "cnf (after cleanUp) = " << endl << "\t: " << *cnf << endl;//uncommented by happy
+      //cout << "cnf (after cleanUp) = " << endl << "\t: " << *cnf << endl;//uncommented by happy
 
       //commented out: not likely for there to be redundant clauses and is slow
       //replaced with removeRedundantPredicates()
       //cnf->removeRedundantClauses();
 
       cnf->removeRedundantPredicates();
-      cout << "cnf (removed redundant preds) = " <<endl<<"\t: "<<*cnf<<endl; //uncommented by happy
+      //cout << "cnf (removed redundant preds) = " <<endl<<"\t: "<<*cnf<<endl; //uncommented by happy
 
       Array<Clause*> clauses;
       zzcreateClauses(cnf, clauses, flippedClause, isIndivisible);
