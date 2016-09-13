@@ -69,9 +69,6 @@
 #include "variable.h"
 #include "superclause.h"
 
-GroundPredicateHashArray* MRF::realGndPreds_;
-Array<Array<Array<GroundClause*>*>*>* MRF::realGndClauses_;
-Array<Array<Array<int>*>*>* MRF::reverseMap;
 ClauseSampler* Clause::clauseSampler_ = NULL;
 double Clause::fixedSizeB_ = -1;
 double AuxClauseData::fixedSizeB_ = -1;

@@ -87,7 +87,7 @@ bool Predicate::canBeGroundedAs(const GroundPredicate* const & gndPred)
     
   int varGndings[MAX_VAR];
   memset(varGndings, -1, MAX_VAR*sizeof(int));
-  cout<<"terms_->size() "<<terms_->size()<<"\tOutside For Loop (Added By Noman)"<<endl;
+  //cout<<"terms_->size() "<<terms_->size()<<"\tOutside For Loop (Added By Noman)"<<endl;
   for (int i = 0; i < terms_->size(); i++) 
   {
     int termType = (*terms_)[i]->getType();

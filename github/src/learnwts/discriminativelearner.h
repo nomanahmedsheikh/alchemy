@@ -74,7 +74,7 @@
 #include "maxwalksat.h"
 #include "bp.h"
 
-const bool dldebug = false;
+const bool dldebug = true;
 const double EPSILON = .00001;
 
 #ifndef PI
@@ -1382,7 +1382,13 @@ class DiscriminativeLearner
           else
             p = (*knePreds)[predno - unePreds->size()];
           TruthValue tv = state->getDomain()->getDB()->getValue(p);
-
+          if(dldebug) 
+          {
+            cout<<"printing gndPred and tv : ";
+            p->print(cout);
+            cout<<", tv : "<<tv<<endl;
+            cout<<endl;
+          }
           //assert(tv != UNKNOWN);
           //bool activate = true;
           bool activate = false;
@@ -1405,9 +1411,10 @@ class DiscriminativeLearner
         }
 
         state->initMakeBreakCostWatch();
-        //cout<<"getting true cnts => "<<endl;
+        if(dldebug) cout<<"getting true cnts => "<<endl;
         state->getNumClauseGndingsWithUnknown(trainTrueCnts_[i], clauseCnt,
                                               true, unknownPred);
+        if(dldebug) cout<<"got true cnts => "<<endl;
         if (withEM_)
         {
           for (int clauseno = 0; clauseno < clauseCnt; clauseno++)
@@ -1418,8 +1425,10 @@ class DiscriminativeLearner
         }
         //cout<<endl;
         //cout<<"getting false cnts => "<<endl;
+        if(dldebug) cout<<"getting false cnts => "<<endl;
         state->getNumClauseGndingsWithUnknown(trainFalseCnts_[i], clauseCnt,
                                               false, unknownPred);
+        if(dldebug) cout<<"got false cnts => "<<endl;
         delete unknownPred;
         if (dldebug)
         {

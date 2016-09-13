@@ -88,7 +88,7 @@ using namespace std;
 
 const bool useInverseIndex = true;
   // 0 = no ouput, 1 = some output, 2 = full output
-const int clausedebug = 2; // changed by Happy from 0 to 2
+const int clausedebug = 0; // changed by Happy from 0 to 2
 
 
 /******************************************************************************/
@@ -1892,6 +1892,11 @@ class Clause
     //before position gndPredIdx
     //No more than one of the array parameters can be non-NULL.
     //No more than one of the groundPred/gndPred parameters can be non-NULL  
+
+  // Called by addUnknowGndClauses as countNumTrueGroundings(domain, db, true, false, gndPredIdx, groundPred, 
+  //                         NULL, NULL, NULL, NULL, agcs, NULL, NULL, NULL,
+  //                         true, false); // added by happy
+    
   double countNumTrueGroundings(const Domain* const & domain,
                                 const Database* const & db,
                                 const bool& hasUnknownPreds,

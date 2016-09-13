@@ -76,9 +76,9 @@ class GroundPredicate
 {
  public:
   GroundPredicate(Predicate* const & pred)
-    : negGndClauses_(new Array<GroundClause*>),
-      posGndClauses_(new Array<GroundClause*>),
-      gndClauseSet_(new GroundClauseSet),
+    : negGndClauses_(new Array<GroundClause*>), realNegGndClauses_(new Array<GroundClause*>),
+      posGndClauses_(new Array<GroundClause*>), realPosGndClauses_(new Array<GroundClause*>),
+      gndClauseSet_(new GroundClauseSet), realGndClauseSet_(new GroundClauseSet),
       truthValue_(false), wtWhenFalse_(0), wtWhenTrue_(0)
   {
     assert(pred->isGrounded());
@@ -101,13 +101,18 @@ class GroundPredicate
   { 
     if (intArrRep_)    delete intArrRep_; 
     if (gndClauseSet_) delete gndClauseSet_;
+    if (realGndClauseSet_) delete realGndClauseSet_;
     delete negGndClauses_;
+    delete realNegGndClauses_;
     delete posGndClauses_;
+    delete realPosGndClauses_;
   }
 
 
   void deleteGndClauseSet() 
-  { if (gndClauseSet_) delete gndClauseSet_; gndClauseSet_ = NULL; }
+  { if (gndClauseSet_) delete gndClauseSet_; gndClauseSet_ = NULL; 
+    if (realGndClauseSet_) delete realGndClauseSet_; realGndClauseSet_ = NULL; 
+  }
 
   /**
    * Removes the ground clauses from this ground predicate. The gndClauseSet_
@@ -117,9 +122,13 @@ class GroundPredicate
   {
     deleteGndClauseSet();
     delete negGndClauses_;
+    delete realNegGndClauses_;
     delete posGndClauses_;
+    delete realPosGndClauses_;
     negGndClauses_ = new Array<GroundClause*>;
+    realNegGndClauses_ = new Array<GroundClause*>;
     posGndClauses_ = new Array<GroundClause*>;
+    realPosGndClauses_ = new Array<GroundClause*>;
   }
 
   /**
@@ -183,13 +192,31 @@ class GroundPredicate
       return true;
     }
     return false;
+  }
+
+  bool appendRealGndClause(GroundClause* const & gc, const bool& senseInGndClause) 
+  { 
+    if (realGndClauseSet_== NULL || realGndClauseSet_->find(gc) == realGndClauseSet_->end())
+    {
+      if (realGndClauseSet_) realGndClauseSet_->insert(gc);
+      //gndClauses_->append(gc);
+      if (senseInGndClause) realPosGndClauses_->append(gc);
+      else                  realNegGndClauses_->append(gc);
+      //senseInGndClauses_->append(senseInGndClause);
+      return true;
+    }
+    return false;
   } 
 
   const Array<GroundClause*>* getNegGndClauses() const { return negGndClauses_;}
+  const Array<GroundClause*>* getRealNegGndClauses() const { return realNegGndClauses_;}
   const Array<GroundClause*>* getPosGndClauses() const { return posGndClauses_;}
+  const Array<GroundClause*>* getRealPosGndClauses() const { return realPosGndClauses_;}
 
   int getNumGndClauses() const 
   { return negGndClauses_->size() + posGndClauses_->size(); }
+  int getNumRealGndClauses() const 
+  { return realNegGndClauses_->size() + realPosGndClauses_->size(); }
 
 
   bool same(const GroundPredicate* const & gp)
@@ -294,10 +321,20 @@ class GroundPredicate
       for (int i = 0; i < negGndClauses_->size(); i++)
         size += ((*negGndClauses_)[i]->sizeKB());
     }
+    if (realNegGndClauses_)
+    {
+      for (int i = 0; i < realNegGndClauses_->size(); i++)
+        size += ((*realNegGndClauses_)[i]->sizeKB());
+    }
     if (posGndClauses_)
     {
       for (int i = 0; i < posGndClauses_->size(); i++)
         size += ((*posGndClauses_)[i]->sizeKB());
+    }
+    if (realPosGndClauses_)
+    {
+      for (int i = 0; i < realPosGndClauses_->size(); i++)
+        size += ((*realPosGndClauses_)[i]->sizeKB());
     }
 
       // truthValue_
@@ -317,10 +354,16 @@ class GroundPredicate
   size_t hashCode_; // 4 bytes
     // gnd pred is a neg lit in these clauses
   Array<GroundClause*>* negGndClauses_; // 4 bytes + 4*n bytes
+  // gnd pred is a neg lit in these clauses
+  Array<GroundClause*>* realNegGndClauses_; // 4 bytes + 4*n bytes
     // gnd pred is a pos lit in these clauses 
   Array<GroundClause*>* posGndClauses_; // 4 bytes + 4*n bytes
+    // gnd pred is a pos lit in these clauses 
+  Array<GroundClause*>* realPosGndClauses_; // 4 bytes + 4*n bytes
     // Pointers to ground clauses in which this pred occurs
   GroundClauseSet* gndClauseSet_; // 4 bytes + 4*n bytes
+  // Pointers to ground clauses in which this pred occurs
+  GroundClauseSet* realGndClauseSet_; // 4 bytes + 4*n bytes
 
     // Truth value
   bool truthValue_;

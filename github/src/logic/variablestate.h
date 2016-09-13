@@ -126,8 +126,8 @@ class VariableState
                 const MLN* const & mln, const Domain* const & domain,
                 const bool& lazy)
   {
-    //cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
-    //cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
+    if(vsdebug)cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
+    if(vsdebug)cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
     stillActivating_ = true;
     breakHardClauses_ = false;
       // By default MaxWalkSAT mode
@@ -2361,17 +2361,20 @@ class VariableState
     for (int i = 0; i < gndClauses_->size(); i++)
     {
       GroundClause *gndClause = (*gndClauses_)[i];
+      if(vsdebug) gndClause->print(cout);
       int satLitcnt = 0;
       bool unknown = false;
       for (int j = 0; j < gndClause->getNumGroundPredicates(); j++)
       {
         int lit = gndClause->getGroundPredicateIndex(j);
+        if(vsdebug)cout<<"lit : "<<lit<<endl;
         if ((*unknownPred)[abs(lit) - 1])
         {
           unknown = true;
           continue;
         }
         if (isTrueLiteral(lit)) satLitcnt++;
+        if(vsdebug)cout<<"satLitcnt : "<<satLitcnt<<endl;
       }
 
       clauseFrequencies = gndClause->getClauseFrequencies();

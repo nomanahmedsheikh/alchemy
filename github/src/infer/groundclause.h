@@ -86,7 +86,7 @@ typedef IntBoolPair::iterator IntBoolPairItr;
 // Constants
 const double HARD_GROUNDCLAUSE_WT = DBL_MAX; //uncommented by Happy
 //const double HARD_GROUNDCLAUSE_WT = 100; // commented by Happy
-const bool gcdebug = true;
+const bool gcdebug = false;
 
 // Forward declarations
 class MLN;
@@ -109,7 +109,7 @@ class GroundClause
   GroundClause(const Clause* const & c,
                GroundPredicateHashArray* const & gndPredHashArray);
 
-  GroundClause(const Clause* const & c, 
+  GroundClause(const GroundClause* const & gc, 
                            GroundPredicateHashArray* const & gndPredHashArray, Array<int> &predIndices);
 
   ~GroundClause()
@@ -150,6 +150,9 @@ class GroundClause
    * GroundPredicates indexed in the GroundClause.
    */
   void appendToGndPreds(GroundPredicateHashArray* const & gndPredHashArray);
+  void appendToRealGndPreds(
+                      GroundPredicateHashArray* const & gndPredHashArray);
+
 
   bool getGroundPredicateSense(const int& i) const
   { return ((*gndPredIndexes_)[i] > 0); }
@@ -294,7 +297,7 @@ class GroundClause
 
   double sizeKB();
 
-  pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
+  //pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
 
  private:
 
