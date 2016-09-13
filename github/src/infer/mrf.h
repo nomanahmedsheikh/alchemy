@@ -75,7 +75,7 @@
 #include "mln.h"
 #include "groundpredicate.h"
 
-const bool mrfdebug = false;
+const bool mrfdebug = true;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -135,6 +135,7 @@ class MRF
     GroundClauseSet gndClausesSet;
     gndPreds_ = new GroundPredicateHashArray;
     gndClauses_ = new Array<GroundClause*>;
+    flatRealGndClauses_ = new Array<GroundClause*>;
     realGndClauses_ = new Array<Array<Array<GroundClause*>*>*>();
     int numFirstOrderClauses = mln->getNumClauses();
     for(int i = 0 ; i < numFirstOrderClauses ; i++)
@@ -307,6 +308,27 @@ class MRF
     if (gndClauses_->size() == 0)
       cout<< "Markov blankets of query ground predicates are empty" << endl;
 
+    int I = realGndClauses_->size();
+    for(int i = 0 ; i < I ; i++)
+    {
+      int J = (*realGndClauses_)[i]->size();
+      //reverseMap->append(new Array<Array<int>*>());
+      for(int j = 0 ; j < J ; j++)
+      {
+        Array<GroundClause*> temp = *((*((*realGndClauses_)[i]))[j]);
+        int K = temp.size();
+        //((*reverseMap)[i])->append(new Array<int>());
+        for(int k = 0 ; k < K ; k++)
+        {
+          //(temp[k]->foAndGndId_).first = i;
+          //(temp[k]->foAndGndId_).second = j;
+          //((*(*reverseMap)[i])[j])->append(gndClauses_->size());
+          temp[k]->setDivideFactor(K);
+          flatRealGndClauses_->append(temp[k]);
+        } 
+      }
+    }
+
     if (mrfdebug)
     {
       cout << "Clauses in MRF: " << endl;
@@ -315,7 +337,15 @@ class MRF
         (*gndClauses_)[i]->print(cout, domain, gndPreds_);
         cout << endl;
       }
+      cout << "Flat Real Ground Clauses in MRF: " << endl;
+      for (int i = 0; i < flatRealGndClauses_->size(); i++)
+      {
+        (*flatRealGndClauses_)[i]->print(cout, domain, gndPreds_);
+        cout << endl;
+      }
     }
+
+    
       // Compress preds
     for (int i = 0; i < gndPreds_->size(); i++)
       (*gndPreds_)[i]->compress();
@@ -576,6 +606,8 @@ class MRF
 
   const Array<GroundClause*>* getGndClauses() const { return gndClauses_; }
 
+  const Array<GroundClause*>* getFlatRealGndClauses() const { return flatRealGndClauses_; }
+
  private:
 
   void addUnknownGndClauses(const GroundPredicate* const& queryGndPred,
@@ -620,6 +652,7 @@ class MRF
   GroundPredicateHashArray* gndPreds_;
   //GroundPredicateHashArray* realGndPreds_;
   Array<GroundClause*>* gndClauses_;
+  Array<GroundClause*>* flatRealGndClauses_;
   Array<Array<Array<GroundClause*>*>*>* realGndClauses_; // If gndClause is subtype(0,A) ^ subtype(0,B) ^ (S(A)=>C(B)), which is stored as 
   // subtype(0,A) V subtype(0,B) V (S(A)=>C(B)), then this will contain all pieces of this gndClause i.e. 3 clauses : 
   // subtype(0,A), subtype(0,B), S(A)=>C(A)
@@ -629,3 +662,4 @@ class MRF
 
 
 #endif
+

@@ -179,6 +179,10 @@ class GroundClause
     return gndPredIndexes_;
   }
 
+  void divideWtByDivideFactor()
+  {
+    wt_ /= divideFactor_;
+  }
   /**
    * The weight of this ground clause is set to the sum of its parent weights.
    * If the weight has been inverted from the parent, this is taken into account.
@@ -270,6 +274,9 @@ class GroundClause
                    (gndPredIndexes_->size())*sizeof(int)) == 0);
   }
 
+  int getDivideFactor(){return divideFactor_;}
+  void setDivideFactor(int df){divideFactor_ = df;}
+
   void printWithoutWt(ostream& out) const;
   void print(ostream& out) const;
 
@@ -336,6 +343,7 @@ class GroundClause
     // Number of first-order clauses this clause corresponds to. Also stores
     // if the weight has been flipped from each parent clause
   IntBoolPair* foClauseFrequencies_;
+  int divideFactor_;
 
 };
 

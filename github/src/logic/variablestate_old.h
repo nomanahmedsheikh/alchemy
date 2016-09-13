@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = false;
+const bool vsdebug = true;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
@@ -126,8 +126,8 @@ class VariableState
                 const MLN* const & mln, const Domain* const & domain,
                 const bool& lazy)
   {
-    //cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
-    //cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
+    if(vsdebug)cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
+    if(vsdebug)cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
     stillActivating_ = true;
     breakHardClauses_ = false;
       // By default MaxWalkSAT mode
@@ -243,12 +243,22 @@ class VariableState
 
         // Put ground clauses in newClauses_
       newClauses_ = *(Array<GroundClause*>*)mrf_->getGndClauses();
-        // Put ground preds in the hash array
+      newFlatRealGndClauses_ = *(Array<GroundClause*>*)mrf_->getFlatRealGndClauses();
+
+      
+
+      // Put ground preds in the hash array
       //const Array<GroundPredicate*>* gndPreds = mrf_->getGndPreds();
       const GroundPredicateHashArray* gndPreds = mrf_->getGndPreds();
       for (int i = 0; i < gndPreds->size(); i++)
         gndPredHashArray_.append((*gndPreds)[i]);
     
+      cout<<"Printing all ground clauses : "<<endl;
+      for(int z = 0 ; z < newClauses_.size() ; z++)
+      {
+          (newClauses_[z])->printWithWtAndStrVar(cout,domain_,&gndPredHashArray_);
+          cout<<endl;
+      }
         // baseNumAtoms_ are all atoms in eager version
       baseNumAtoms_ = gndPredHashArray_.size();        
     } // End eager version
@@ -633,6 +643,8 @@ class VariableState
   int getNumAtoms() { return gndPreds_->size(); }
   
   int getNumClauses() { return gndClauses_->size(); }
+
+  int getNumFlatRealClauses() { return flatRealGndClauses_->size(); }
   
   int getNumDeadClauses()
   { 
@@ -2352,17 +2364,20 @@ class VariableState
     for (int i = 0; i < gndClauses_->size(); i++)
     {
       GroundClause *gndClause = (*gndClauses_)[i];
+      if(vsdebug) gndClause->print(cout);
       int satLitcnt = 0;
       bool unknown = false;
       for (int j = 0; j < gndClause->getNumGroundPredicates(); j++)
       {
         int lit = gndClause->getGroundPredicateIndex(j);
+        if(vsdebug)cout<<"lit : "<<lit<<endl;
         if ((*unknownPred)[abs(lit) - 1])
         {
           unknown = true;
           continue;
         }
         if (isTrueLiteral(lit)) satLitcnt++;
+        if(vsdebug)cout<<"satLitcnt : "<<satLitcnt<<endl;
       }
 
       clauseFrequencies = gndClause->getClauseFrequencies();
@@ -3292,6 +3307,8 @@ class VariableState
   
   //Array<GroundClause*>* gndClauses_;
   GroundClauseHashArray* gndClauses_;
+
+  GroundClauseHashArray* flatRealGndClauses_;
   
     // Predicates corresponding to the groundings of the unknown non-evidence
     // predicates
@@ -3325,7 +3342,8 @@ class VariableState
 
     // Holds the new active clauses
   Array<GroundClause*> newClauses_;
-
+   // Holds the new active ground formulas
+  Array<GroundFormula*> newFormulas_;
     // Holds the new gnd preds
   Array<GroundPredicate*> newPreds_;
     // Holds the ground predicates in a hash array.

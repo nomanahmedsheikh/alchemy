@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = false;
+const bool vsdebug = true;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
@@ -242,8 +242,8 @@ class VariableState
       delete queries;
 
         // Put ground clauses in newClauses_
-      newClauses_ = *(Array<GroundClause*>*)mrf_->getGndClauses();
-
+      newClauses_ = *(Array<GroundClause*>*)mrf_->getFlatRealGndClauses();
+      originalGndClauses_ = *(Array<GroundClause*>*)mrf_->getGndClauses();
       
 
       // Put ground preds in the hash array
@@ -642,6 +642,7 @@ class VariableState
   int getNumAtoms() { return gndPreds_->size(); }
   
   int getNumClauses() { return gndClauses_->size(); }
+
   
   int getNumDeadClauses()
   { 
@@ -2189,6 +2190,7 @@ class VariableState
     {
       GroundClause* gndClause = (*gndClauses_)[i];
       gndClause->setWtToSumOfParentWts(mln_);
+      gndClause->divideWtByDivideFactor();
       if (gndClause->isHardClause())
         clauseCost_[i] = hardWt_;
       else
@@ -2246,14 +2248,24 @@ class VariableState
     for (int clauseno = 0; clauseno < clauseCnt; clauseno++)
       assert ((*numGndings)[clauseno] >= 0);
     
-    for (int i = 0; i < gndClauses_->size(); i++)
+    for (int i = 0; i < originalGndClauses_.size(); i++)
     {
       GroundClause *gndClause = (*gndClauses_)[i];
-      int satLitcnt = 0;
+      int normalSatLitcnt = 0;
+      int subtypeUnsatLitcnt = 0;
       for (int j = 0; j < gndClause->getNumGroundPredicates(); j++)
       {
         int lit = gndClause->getGroundPredicateIndex(j);
-        if (isTrueLiteral(lit)) satLitcnt++;
+        const GroundPredicate* gndPred = gndClause->getGroundPredicate(j,&gndPredHashArray_);
+        if(gndPred->getPredName(domain_) == "subtype")
+        {
+          if (isTrueLiteral(lit)) subtypeUnsatLitcnt++;  
+        }
+        else
+        {
+          if (isTrueLiteral(lit)) satLitcnt++;  
+        }
+        
       }
 
       clauseFrequencies = gndClause->getClauseFrequencies();
@@ -2267,14 +2279,14 @@ class VariableState
         if (invertWt)
         {
             // Want true and is true => don't count it
-          if (tv && satLitcnt > 0)
+          if (tv && satLitcnt > 0 && subtypeUnsatLitcnt == 0)
           {
               // Lazy: We need to keep track of false groundings also
             if (lazy_) lazyFalseGndings[clauseno] += frequency;
             continue;
           }
             // Want false and is false => don't count it
-          if (!tv && satLitcnt == 0)
+          if (!tv && (satLitcnt == 0 || subtypeUnsatLitcnt > 0))
           {
               // Lazy: We need to keep track of false groundings also
             if (lazy_) lazyTrueGndings[clauseno] += frequency;
@@ -2284,14 +2296,14 @@ class VariableState
         else
         {
             // Want true and is false => don't count it
-          if (tv && satLitcnt == 0)
+          if (tv && (satLitcnt == 0 || subtypeUnsatLitcnt > 0)
           {
               // Lazy: We need to keep track of false groundings also
             if (lazy_) lazyFalseGndings[clauseno] += frequency;
             continue;
           }
             // Want false and is true => don't count it
-          if (!tv && satLitcnt > 0)
+          if (!tv && satLitcnt > 0 && subtypeUnsatLitcnt == 0)
           {
               // Lazy: We need to keep track of false groundings also
             if (lazy_) lazyTrueGndings[clauseno] += frequency;
@@ -3302,8 +3314,9 @@ class VariableState
     // Lazy version: Holds active atoms and clauses
   Array<GroundPredicate*>* gndPreds_;
   
-  //Array<GroundClause*>* gndClauses_;
+  Array<GroundClause*> originalGndClauses_;
   GroundClauseHashArray* gndClauses_;
+
   
     // Predicates corresponding to the groundings of the unknown non-evidence
     // predicates
