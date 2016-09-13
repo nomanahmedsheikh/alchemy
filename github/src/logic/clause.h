@@ -88,7 +88,7 @@ using namespace std;
 
 const bool useInverseIndex = true;
   // 0 = no ouput, 1 = some output, 2 = full output
-const int clausedebug = 0; // changed by Happy from 0 to 2
+const int clausedebug = 2; // changed by Happy from 0 to 2
 
 
 /******************************************************************************/

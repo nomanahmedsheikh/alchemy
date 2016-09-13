@@ -144,6 +144,71 @@ GroundClause::GroundClause(const Clause* const & c,
   gndPredIndexes_->compress();
 }
 
+GroundClause::GroundClause(const Clause* const & c, 
+                           GroundPredicateHashArray* const & gndPredHashArray, Array<int> &predIndices) 
+  : wt_(c->getWt()), foClauseFrequencies_(NULL)
+{
+  
+  int numPreds = predIndices.size();
+  if (gcdebug) cout<<"numPreds : "<<numPreds<<endl;
+  gndPredIndexes_ = new Array<int>;
+  Array<unsigned int>* intArrRep = new Array<unsigned int>;
+  cout<<"gndPredHashArray size : "<<gndPredHashArray->size()<<endl;
+    // For each predicate in clause c
+  for (int a = 0; a < numPreds; a++)
+  {
+    bool deletePred = false;
+    int i = predIndices[a];
+    Predicate* pred = c->getPredicate(i);
+
+    if (gcdebug) cout << "Constructing GroundPredicate" << endl;
+    GroundPredicate* gndPred = new GroundPredicate(pred);
+    assert(gndPred);
+    if (gcdebug)
+    {
+      cout << "Constructed GroundPredicate ";
+      gndPred->print(cout);
+      cout << endl;
+    }
+
+    if (gcdebug) cout << "Finding GroundPredicate" << endl;
+    int index = gndPredHashArray->find(gndPred);
+    if (gcdebug) cout << "Index of GroundPredicate: " << index << endl;
+    if (index < 0 )
+    { // Predicate not seen before: add it to hash array
+      if (gcdebug) cout << "Pred " << i << " not seen before" << endl;
+      index = gndPredHashArray->append(gndPred) + 1;
+      if (gcdebug) cout << "Appended it" << endl;
+    }
+    else
+    { // Predicate seen before: must be deleted later
+      if (gcdebug) cout << "Pred " << i << " seen before" << endl;
+      deletePred = true;
+      index++;
+    }
+      // index is the index in hash array + 1    
+    int wlit;
+    if (pred->getSense())
+    {
+      wlit = index;
+      intArrRep->append(1);
+    }
+    else
+    {
+      wlit = -index;
+      intArrRep->append((unsigned int)0);
+    }
+    intArrRep->append(index);
+    gndPredIndexes_->append(wlit);
+    if (deletePred) delete gndPred;
+  }
+  
+  hashCode_ = Hash::hash(*intArrRep);
+  delete intArrRep;
+  gndPredIndexes_->compress();
+}
+
+
 /**
  * Appends this GroundClause to all GroundPredicates in it.
  * 
@@ -152,14 +217,18 @@ GroundClause::GroundClause(const Clause* const & c,
  */
 void GroundClause::appendToGndPreds(
                       GroundPredicateHashArray* const & gndPredHashArray)
-{ 
+{
+
+  if(gcdebug)cout<<"gndPredIndexes_size : "<<gndPredIndexes_->size()<<endl; 
     // For each ground pred in this clause
   for (int i = 0; i < gndPredIndexes_->size(); i++)
   {
     bool sense = ((*gndPredIndexes_)[i] > 0);
     int index = abs((*gndPredIndexes_)[i]) - 1;
+    if(gcdebug)cout<<"sense : "<<sense<<endl; 
       // Tell the ground pred that it occurs in this ground clause
     (*gndPredHashArray)[index]->appendGndClause(this, sense);
+    if(gcdebug)cout<<"gndclauseappended..."<<endl;
     //assert(ok); ok = true;  // avoid compilation warning
   }
 }

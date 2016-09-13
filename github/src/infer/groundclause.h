@@ -84,9 +84,9 @@ typedef IntBoolPair::iterator IntBoolPairItr;
 //////////////////////////////////////////////////////////////
 
 // Constants
-//const double HARD_GROUNDCLAUSE_WT = DBL_MAX;
-const double HARD_GROUNDCLAUSE_WT = 100;
-const bool gcdebug = false;
+const double HARD_GROUNDCLAUSE_WT = DBL_MAX; //uncommented by Happy
+//const double HARD_GROUNDCLAUSE_WT = 100; // commented by Happy
+const bool gcdebug = true;
 
 // Forward declarations
 class MLN;
@@ -108,6 +108,9 @@ class GroundClause
  public:
   GroundClause(const Clause* const & c,
                GroundPredicateHashArray* const & gndPredHashArray);
+
+  GroundClause(const Clause* const & c, 
+                           GroundPredicateHashArray* const & gndPredHashArray, Array<int> &predIndices);
 
   ~GroundClause()
   {
@@ -291,6 +294,8 @@ class GroundClause
 
   double sizeKB();
 
+  pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
+
  private:
 
   /**
@@ -314,8 +319,8 @@ class GroundClause
     hashCode_ = Hash::hash(*intArrRep);
     delete intArrRep;
   }
- //public://added by Happy
-// int parentFormulaId_; //added by Happy
+ public://added by Happy
+ int jGivenI; // Given index i of first order formula from which it came, what is the index of this ground formula in MRF::realGndClauses
  private:
     // Hash code of this ground clause
   size_t hashCode_;
