@@ -219,7 +219,7 @@ GroundClause::GroundClause(const Clause* const & c,
 
 GroundClause::GroundClause(const GroundClause* const & gc, 
                            GroundPredicateHashArray* const & gndPredHashArray, Array<int> &predIndices) 
-  : wt_(gc->getWt())
+  : wt_(gc->getWt()), foClauseFrequencies_(NULL)
 {
   divideFactors_ = new map<int,double>();
   if(gc->foClauseFrequencies_)

@@ -88,14 +88,13 @@ struct AddGroundClauseStruct
                         const Array<int>* const & aallPredGndingsAreQueries,
                         GroundClauseSet* const & ggndClausesSet, GroundClauseSet* const & rrealGndClausesSet,
                         Array<GroundClause*>* const & ggndClauses,
-                        Array<Array<Array<GroundClause*>*>*>* const & rrealGndClauses,
                         const bool& mmarkHardGndClauses,
                         const double* const & pparentWtPtr,
                         const int & cclauseId)
     : seenPreds(sseenPreds), unseenPreds(uunseenPreds), gndPreds(ggndPreds),
       allPredGndingsAreQueries(aallPredGndingsAreQueries),
       gndClausesSet(ggndClausesSet), realGndClausesSet(rrealGndClausesSet),
-      gndClauses(ggndClauses), realGndClauses(rrealGndClauses), markHardGndClauses(mmarkHardGndClauses),
+      gndClauses(ggndClauses), markHardGndClauses(mmarkHardGndClauses),
       parentWtPtr(pparentWtPtr), clauseId(cclauseId) {}
   
   ~AddGroundClauseStruct() {}
@@ -107,7 +106,6 @@ struct AddGroundClauseStruct
   GroundClauseSet* gndClausesSet;
   GroundClauseSet* realGndClausesSet;
   Array<GroundClause*>* gndClauses;
-  Array<Array<Array<GroundClause*>*>*>* realGndClauses;
   const bool markHardGndClauses;
   const double* parentWtPtr;
   const int clauseId;
@@ -134,18 +132,13 @@ class MRF
     GroundPredicateSet unseenPreds, seenPreds;
     GroundPredicateToIntMap gndPredsMap;
     GroundClauseSet gndClausesSet;
-    GroundClauseSet realGndClausesSet;
+    GroundClauseSet realGndClausesSet;  
     gndPreds_ = new GroundPredicateHashArray;
     gndClauses_ = new Array<GroundClause*>;
     flatRealGndClauses_ = new Array<GroundClause*>;
-    realGndClauses_ = new Array<Array<Array<GroundClause*>*>*>();
+    
     int numFirstOrderClauses = mln->getNumClauses();
-    for(int i = 0 ; i < numFirstOrderClauses ; i++)
-    {
-      realGndClauses_->append(new Array<Array<GroundClause*>*>());  
-    }
-    if(mrfdebug)
-      cout<<"realGndClauses size : "<<realGndClauses_->size()<<endl;    
+    
     //reverseMap = new Array<Array<Array<int>*>*>();
     long double memNeeded = 0;
 
@@ -234,7 +227,7 @@ class MRF
           (trackParentClauseWts) ? c->getWtPtr() : NULL;
         AddGroundClauseStruct agc(&seenPreds, &unseenPreds, gndPreds_,
                                   allPredGndingsAreQueries,
-                                  &gndClausesSet, &realGndClausesSet, gndClauses_, realGndClauses_,
+                                  &gndClausesSet, &realGndClausesSet, gndClauses_,
                                   markHardGndClauses, parentWtPtr,
                                   clauseId);
         //cout << "Happy number of grounded clauses = " << gndClauses_->size() << endl; //added by Happy
@@ -310,25 +303,9 @@ class MRF
     if (gndClauses_->size() == 0)
       cout<< "Markov blankets of query ground predicates are empty" << endl;
 
-    int I = realGndClauses_->size();
-    for(int i = 0 ; i < I ; i++)
+    for(GroundClauseSet::iterator iter = realGndClausesSet.begin() ; iter != realGndClausesSet.end() ; iter++)
     {
-      int J = (*realGndClauses_)[i]->size();
-      //reverseMap->append(new Array<Array<int>*>());
-      for(int j = 0 ; j < J ; j++)
-      {
-        Array<GroundClause*> temp = *((*((*realGndClauses_)[i]))[j]);
-        int K = temp.size();
-        //((*reverseMap)[i])->append(new Array<int>());
-        for(int k = 0 ; k < K ; k++)
-        {
-          //(temp[k]->foAndGndId_).first = i;
-          //(temp[k]->foAndGndId_).second = j;
-          //((*(*reverseMap)[i])[j])->append(gndClauses_->size());
-          //temp[k]->setDivideFactor(K);
-          flatRealGndClauses_->append(temp[k]);
-        } 
-      }
+      flatRealGndClauses_->append(*iter);
     }
 
     if (mrfdebug)
@@ -354,7 +331,7 @@ class MRF
 
     gndPreds_->compress();
     gndClauses_->compress();
-    realGndClauses_->compress();
+    flatRealGndClauses_->compress();
 
     cout <<"Time taken to construct MRF = ";
     Timer::printTime(cout,timer.time());
@@ -376,7 +353,7 @@ class MRF
 
     return size;    
   }
-
+  /*
   static bool appendToRealGndClauses(GroundClause *gc, const AddGroundClauseStruct* const & agcs, Array<GroundClause*> &groundClausesAppended)
   {
     Array<Array<Array<GroundClause*>*>*>* realGndClauses = agcs->realGndClauses;
@@ -420,19 +397,15 @@ class MRF
     }
 
   }
-
+  */
   static void addToRealGndClauses(const GroundClause* const & gcArg, const bool &isHardClause, const AddGroundClauseStruct* const & agcs, const Database *db )
   {
     int numRealGndClauses = 0;
-    Array<Array<Array<GroundClause*>*>*>* realGndClauses = agcs->realGndClauses;
+    GroundClauseSet *realGndClausesSet = agcs->realGndClausesSet;
     Array<GroundClause*> groundClausesAppended;
     GroundPredicateHashArray* gndPreds = agcs->gndPreds;
     if(mrfdebug)
       cout<<"In MRF::addToRealGndClauses"<<endl;
-    int i = agcs->clauseId;
-    int j = (*realGndClauses)[i]->size();
-    if(mrfdebug)
-      cout<<"i : "<<i<<",j : "<<j<<endl;
 
     Array<int> subTypeIndices(1,-1);
     Array<int> normalIndices;
@@ -441,6 +414,16 @@ class MRF
     int numGroundPredicates = gcArg->getNumGroundPredicates();
     for(int n = 0 ; n < numGroundPredicates ; n++)
     {
+      if(mrfdebug)
+      {
+        cout<<"n : "<<n<<endl;
+        cout<<"printing realGndClauses set : "<<endl;
+        for(GroundClauseSet::iterator iter = realGndClausesSet->begin() ; iter != realGndClausesSet->end() ; iter++)
+        {
+          (*iter)->print(cout);
+          cout<<endl;
+        }
+      }
       const GroundPredicate* gndPred = gcArg->getGroundPredicate(n,gndPreds);
       
       if(gndPred->getPredName(db->getDomain()) == "subtype")
@@ -448,29 +431,29 @@ class MRF
         subTypeIndices[0] = n;
         if(mrfdebug)cout<<"subtype size is : "<<subTypeIndices.size()<<endl;
         GroundClause *newgc = new GroundClause(gcArg, gndPreds, subTypeIndices);
-        bool isAppended = appendToRealGndClauses(newgc,agcs,groundClausesAppended);
-        if(!isAppended)
-          delete newgc;
+        if(mrfdebug)
+        {
+          cout<<"printing newgc : "<<endl;
+          newgc->print(cout);
+          cout<<endl;
+        }
+        GroundClauseSet::iterator iter = realGndClausesSet->find(newgc);
+        if(iter == realGndClausesSet->end())
+        {
+          if(mrfdebug)cout<<"This piece comes first time..."<<endl;
+          groundClausesAppended.append(newgc);
+          realGndClausesSet->insert(newgc);
+        }
         else
         {
-          if(mrfdebug)
-            cout<<"appended succesfully..."<<endl;
+          if(mrfdebug)cout<<"This piece has already come..."<<endl;
+          groundClausesAppended.append(*iter); 
+          if(mrfdebug)cout<<"This piece has been appended.."<<endl;
+          delete newgc;
         }
+        if(mrfdebug)cout<<"numRealGndClauses : "<<numRealGndClauses<<endl;
         numRealGndClauses++;
-        /*
-        bool invertWt = false;
-        // We want to normalize soft unit clauses to all be positives
-        if (!isHardClause && gc->getNumGroundPredicates() == 1 &&
-            !gc->getGroundPredicateSense(0))
-        {
-          gc->setGroundPredicateSense(0, true);
-          gc->setWt(-gc->getWt());
-          invertWt = true;
-        }
-        if (parentWtPtr)
-          gc->incrementClauseFrequency(agcs->clauseId, 1, invertWt);
-        */
-        
+        if(mrfdebug)cout<<"numRealGndClauses : "<<numRealGndClauses<<endl;
       }
       else
       {
@@ -479,30 +462,30 @@ class MRF
     }
     if(mrfdebug)cout<<"normalIndices created succesfully..."<<endl;
     GroundClause *newgc = new GroundClause(gcArg, gndPreds, normalIndices);
-    if(!appendToRealGndClauses(newgc,agcs,groundClausesAppended))
-        delete newgc;
-    numRealGndClauses++;
-    /*
-    bool invertWt = false;
-    // We want to normalize soft unit clauses to all be positives
-    if (!isHardClause && gc->getNumGroundPredicates() == 1 &&
-        !gc->getGroundPredicateSense(0))
+    GroundClauseSet::iterator iter = realGndClausesSet->find(newgc);
+    if(iter == realGndClausesSet->end())
     {
-      gc->setGroundPredicateSense(0, true);
-      gc->setWt(-gc->getWt());
-      invertWt = true;
+      if(mrfdebug)cout<<"This piece comes first time..."<<endl;
+      groundClausesAppended.append(newgc);
+      realGndClausesSet->insert(newgc);
     }
+    else
+    {
+      if(mrfdebug)cout<<"This piece has already come..."<<endl;
+      groundClausesAppended.append(*iter);
+      delete newgc; 
+    }
+    numRealGndClauses++;
     
-    if (parentWtPtr)
-      gc->incrementClauseFrequency(agcs->clauseId, 1, invertWt);
-    */
-    
+    if(mrfdebug){cout<<"numRealGndClauses : "<<numRealGndClauses<<endl;}
     for(int k = 0 ; k < numRealGndClauses; k++)
     {
-      if(groundClausesAppended[k])
-        groundClausesAppended[k]->updateDivideFactor(clauseno, numRealGndClauses);
+      const pair<int,bool>* clauseFrequencyPair = groundClausesAppended[k]->getClauseFrequencyPair(clauseno);
+      bool invertWt = clauseFrequencyPair->second;
+      groundClausesAppended[k]->incrementClauseFrequency(clauseno, 1, invertWt);
+      groundClausesAppended[k]->updateDivideFactor(clauseno, numRealGndClauses);
+      cout<<"k : "<<k<<", info updated"<<endl;
     }
-    
   }
 
     // Do not delete the clause and truncClause argument.
@@ -518,7 +501,7 @@ class MRF
     const Array<int>* allGndingsAreQueries  = agcs->allPredGndingsAreQueries;
     GroundClauseSet*          gndClausesSet = agcs->gndClausesSet;
     Array<GroundClause*>*     gndClauses    = agcs->gndClauses;
-    Array<Array<Array<GroundClause*>*>*>* realGndClauses = agcs->realGndClauses;
+    GroundClauseSet* realGndClausesSet      = agcs->realGndClausesSet;
     const bool markHardGndClauses           = agcs->markHardGndClauses;
     const double* parentWtPtr               = agcs->parentWtPtr;
     const int clauseId                      = agcs->clauseId;
@@ -586,6 +569,18 @@ class MRF
     //gndClause->parentFormulaId_ = clause->parentFormulaId_; // added by Happy
     //cout<<"set parentFormulaId_ to : "<<gndClause->parentFormulaId_<<endl; // added by Happy
     GroundClauseSet::iterator iter = gndClausesSet->find(gndClause);
+    if(mrfdebug)
+    {
+      cout<<"printing current big gnd clause : "<<endl;
+      gndClause->print(cout);
+      cout<<endl;
+      cout<<"printing big gnd clausesSet :"<<endl;
+      for(GroundClauseSet::iterator iter = gndClausesSet->begin() ; iter != gndClausesSet->end() ; iter++)
+      {
+        (*iter)->print(cout);
+        cout<<endl;
+      }
+    }
       // If the unknown clause is not in gndClauses
     if (iter == gndClausesSet->end())
     {
@@ -618,27 +613,8 @@ class MRF
     else
     {
       if(mrfdebug)cout<<"Big ground clause already havs appeared..."<<endl;
-      // gndClause has appeared before, so just accumulate its weight
-      /*
-      (*iter)->addWt(gndClause->getWt());
-      int jGivenI = (*iter)->jGivenI;
-      cout<<"jGivenI : "<<jGivenI<<endl;
-      int i = agcs->clauseId;
-      int n = (*(*realGndClauses)[i])[jGivenI]->size();
-      for(int k = 0 ; k < n ; k++)
-      {
-        double wt = gndClause->getWt();
-        (*(*(*realGndClauses)[i])[jGivenI])[k]->addWt(wt/n);
-        if(parentWtPtr)
-          (*(*(*realGndClauses)[i])[jGivenI])[k]->incrementClauseFrequency(clauseId, 1, invertWt);
-      }
-
-      if (parentWtPtr)
-        (*iter)->incrementClauseFrequency(clauseId, 1, invertWt);
-      */
       addToRealGndClauses(gndClause, isHardClause, agcs, db);
       delete gndClause;
-
     }
   } //addUnknownGndClause()
 
@@ -712,11 +688,7 @@ class MRF
   //GroundPredicateHashArray* realGndPreds_;
   Array<GroundClause*>* gndClauses_;
   Array<GroundClause*>* flatRealGndClauses_;
-  Array<Array<Array<GroundClause*>*>*>* realGndClauses_; // If gndClause is subtype(0,A) ^ subtype(0,B) ^ (S(A)=>C(B)), which is stored as 
-  // subtype(0,A) V subtype(0,B) V (S(A)=>C(B)), then this will contain all pieces of this gndClause i.e. 3 clauses : 
-  // subtype(0,A), subtype(0,B), S(A)=>C(A)
-  // realGndClauses[i][j][k] means kth piece of jth ground clause generated from ith first order clause.
-  //Array<Array<Array<int>*>*>* reverseMap;
+  
 };
 
 
