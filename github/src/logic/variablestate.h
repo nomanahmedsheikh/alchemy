@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = false;
+const bool vsdebug = true;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
@@ -148,7 +148,7 @@ class VariableState
     lowBad_ = INT_MAX;
 
       // Clauses and preds are stored in gndClauses_ and gndPreds_
-    gndClauses_ = new Array<GroundClause*>;
+    gndClauses_ = new GroundClauseHashArray;
     gndPreds_ = new Array<GroundPredicate*>;
 
       // Set the hard clause weight
@@ -2189,7 +2189,7 @@ class VariableState
     for (int i = 0; i < gndClauses_->size(); i++)
     {
       GroundClause* gndClause = (*gndClauses_)[i];
-      gndClause->setWtToSumOfParentWts(mln_);
+      gndClause->setWtToWeightedSumOfParentWts(mln_);
       if (gndClause->isHardClause())
         clauseCost_[i] = hardWt_;
       else
@@ -3315,7 +3315,7 @@ class VariableState
   
   Array<GroundClause*> originalGndClauses_;
   // GroundClauseHashArray* gndClauses_;
-  Array<GroundClause*>* gndClauses_;
+  GroundClauseHashArray* gndClauses_;
   
     // Predicates corresponding to the groundings of the unknown non-evidence
     // predicates

@@ -72,6 +72,7 @@ GroundClause::GroundClause(const Clause* const & c,
                            GroundPredicateHashArray* const & gndPredHashArray) 
   : wt_(c->getWt()), foClauseFrequencies_(NULL)
 {
+  divideFactors_ = new map<int,double>();
   if (gcdebug) cout << "Constructing GroundClause" << endl;
   if (gcdebug)
   {
@@ -220,6 +221,7 @@ GroundClause::GroundClause(const GroundClause* const & gc,
                            GroundPredicateHashArray* const & gndPredHashArray, Array<int> &predIndices) 
   : wt_(gc->getWt())
 {
+  divideFactors_ = new map<int,double>();
   if(gc->foClauseFrequencies_)
   {
     foClauseFrequencies_ = new IntBoolPair;
@@ -340,6 +342,24 @@ void GroundClause::appendToRealGndPreds(
   }
 }
 
+void GroundClause::setWtToWeightedSumOfParentWts(const MLN* const & mln)
+{
+  wt_ = 0;
+  IntBoolPairItr itr;
+  for (itr = foClauseFrequencies_->begin();
+       itr != foClauseFrequencies_->end(); itr++)
+  {
+    int clauseno = itr->first;
+    int frequency = itr->second.first;
+    bool invertWt = itr->second.second;
+    map<int,double>::iterator itr2 = divideFactors_->find(clauseno);
+    assert(itr2 != divideFactors_->end());
+    double divideFactor = itr2->second;
+    double parentWeight = mln->getClause(clauseno)->getWt();
+    if (invertWt) wt_ -= (parentWeight*frequency)/divideFactor;
+    else wt_ += (parentWeight*frequency)/divideFactor;
+  } 
+}
 /**
  * The weight of this ground clause is set to the sum of its parent weights.
  * If the weight has been inverted from the parent, this is taken into account.

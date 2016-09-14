@@ -187,10 +187,26 @@ class GroundClause
    * correspond.
    */
   void setWtToSumOfParentWts(const MLN* const & mln);
+  void setWtToWeightedSumOfParentWts(const MLN* const & mln);
 
   IntBoolPair *getClauseFrequencies()
   {
     return foClauseFrequencies_;
+  }
+
+  const pair<int,bool>* getClauseFrequencyPair(int clauseno)
+  {
+    if (!foClauseFrequencies_) return 0;
+    IntBoolPairItr itr = foClauseFrequencies_->find(clauseno);
+    if (itr == foClauseFrequencies_->end())
+    {
+      pair<int,bool>* result = new pair<int,bool>(); //caller is responsible for deletion if frequency is zero
+      result->first = 0;
+      result->second = false;
+      return result;
+    }
+    else
+      return &(itr->second);
   }
 
   int getClauseFrequency(int clauseno)
@@ -201,6 +217,21 @@ class GroundClause
 	  return 0;
 	else
 	  return itr->second.first;
+  }
+
+  void updateDivideFactor(int clauseno, int divideFactor)
+  {
+    if(!divideFactors_)
+      divideFactors_ = new map<int,double>();
+    map<int,double>::iterator itr = divideFactors_->find(clauseno);
+    if(itr == divideFactors_->end())
+      divideFactors_->insert(make_pair(clauseno, divideFactor));
+    else
+    {
+      double currentD = itr->second;
+      double newD = (currentD*divideFactor)/(currentD+divideFactor); // new divide Factor is the reciprocal of the sum of reciprocals of currentD and divideFactor
+      itr->second = newD;
+    }
   }
 
   void incrementClauseFrequency(int clauseno, int increment, bool invertWt)
@@ -270,9 +301,6 @@ class GroundClause
                    (gndPredIndexes_->size())*sizeof(int)) == 0);
   }
 
-  int getDivideFactor(){return divideFactor_;}
-  void setDivideFactor(int df){divideFactor_ = df;}
-
   void printWithoutWt(ostream& out) const;
   void print(ostream& out) const;
 
@@ -300,7 +328,7 @@ class GroundClause
 
   double sizeKB();
 
-  pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
+  //pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
 
  private:
 
@@ -326,7 +354,6 @@ class GroundClause
     delete intArrRep;
   }
  public://added by Happy
- int jGivenI; // Given index i of first order formula from which it came, what is the index of this ground formula in MRF::realGndClauses
  private:
     // Hash code of this ground clause
   size_t hashCode_;
@@ -339,7 +366,8 @@ class GroundClause
     // Number of first-order clauses this clause corresponds to. Also stores
     // if the weight has been flipped from each parent clause
   IntBoolPair* foClauseFrequencies_;
-  int divideFactor_;
+  // key : first order clauseId, value : divide factor
+  map<int,double>* divideFactors_;
 
 };
 
