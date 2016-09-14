@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = true;
+const bool vsdebug = false;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
@@ -148,7 +148,7 @@ class VariableState
     lowBad_ = INT_MAX;
 
       // Clauses and preds are stored in gndClauses_ and gndPreds_
-    gndClauses_ = new GroundClauseHashArray;
+    gndClauses_ = new Array<GroundClause*>;
     gndPreds_ = new Array<GroundPredicate*>;
 
       // Set the hard clause weight
@@ -2190,7 +2190,6 @@ class VariableState
     {
       GroundClause* gndClause = (*gndClauses_)[i];
       gndClause->setWtToSumOfParentWts(mln_);
-      gndClause->divideWtByDivideFactor();
       if (gndClause->isHardClause())
         clauseCost_[i] = hardWt_;
       else
@@ -2251,7 +2250,7 @@ class VariableState
     for (int i = 0; i < originalGndClauses_.size(); i++)
     {
       GroundClause *gndClause = (*gndClauses_)[i];
-      int normalSatLitcnt = 0;
+      int satLitcnt = 0;
       int subtypeUnsatLitcnt = 0;
       for (int j = 0; j < gndClause->getNumGroundPredicates(); j++)
       {
@@ -2296,7 +2295,7 @@ class VariableState
         else
         {
             // Want true and is false => don't count it
-          if (tv && (satLitcnt == 0 || subtypeUnsatLitcnt > 0)
+          if (tv && (satLitcnt == 0 || subtypeUnsatLitcnt > 0))
           {
               // Lazy: We need to keep track of false groundings also
             if (lazy_) lazyFalseGndings[clauseno] += frequency;
@@ -3315,8 +3314,8 @@ class VariableState
   Array<GroundPredicate*>* gndPreds_;
   
   Array<GroundClause*> originalGndClauses_;
-  GroundClauseHashArray* gndClauses_;
-
+  // GroundClauseHashArray* gndClauses_;
+  Array<GroundClause*>* gndClauses_;
   
     // Predicates corresponding to the groundings of the unknown non-evidence
     // predicates

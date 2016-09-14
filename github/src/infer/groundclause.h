@@ -179,10 +179,6 @@ class GroundClause
     return gndPredIndexes_;
   }
 
-  void divideWtByDivideFactor()
-  {
-    wt_ /= divideFactor_;
-  }
   /**
    * The weight of this ground clause is set to the sum of its parent weights.
    * If the weight has been inverted from the parent, this is taken into account.
@@ -304,7 +300,7 @@ class GroundClause
 
   double sizeKB();
 
-  //pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
+  pair<int,int> foAndGndId_; // (a,b) : a is first order clauseId, b is bth ground clause created from first order clause with clause Id a.
 
  private:
 

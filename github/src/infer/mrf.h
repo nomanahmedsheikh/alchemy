@@ -75,7 +75,7 @@
 #include "mln.h"
 #include "groundpredicate.h"
 
-const bool mrfdebug = true;
+const bool mrfdebug = false;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -320,8 +320,8 @@ class MRF
         //((*reverseMap)[i])->append(new Array<int>());
         for(int k = 0 ; k < K ; k++)
         {
-          //(temp[k]->foAndGndId_).first = i;
-          //(temp[k]->foAndGndId_).second = j;
+          (temp[k]->foAndGndId_).first = i;
+          (temp[k]->foAndGndId_).second = j;
           //((*(*reverseMap)[i])[j])->append(gndClauses_->size());
           temp[k]->setDivideFactor(K);
           flatRealGndClauses_->append(temp[k]);

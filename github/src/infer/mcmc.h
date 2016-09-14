@@ -1072,11 +1072,8 @@ class MCMC : public Inference
     if (mcmcdebug) cout << "Entering updateWtsForGndPreds" << endl;
       // for each ground predicate whose MB has changed
 
-    cout<<"printing ground predicates and their truth values : "<<endl;
     for (int g = 0; g < gndPreds.size(); g++)
     {
-    	gndPreds[g]->print(cout,state_->getDomain());
-    	cout<<" : "<<gndPreds[g]->getTruthValue()<<endl;
       double wtIfNoChange = 0, wtIfInverted = 0, wt;
         // Ground clauses in which this pred occurs
       Array<int>& negGndClauses =
@@ -1121,7 +1118,6 @@ class MCMC : public Inference
         else
           numSatLiterals = state_->getNumTrueLits(gndClauseIdx);
 
-      	cout<<"numSatLiterals : "<<numSatLiterals<<endl;
         if (numSatLiterals > 1)
         {
             // Some other literal is making it sat, so it doesn't matter

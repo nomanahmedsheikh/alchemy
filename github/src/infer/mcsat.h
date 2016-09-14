@@ -191,25 +191,7 @@ class MCSAT : public MCMC
       affectedGndPreds.append(state_->getGndPred(i), numAtoms);
       affectedGndPredIndices.append(i);
     }
-    cout<<"printing ground pred indexes : "<<endl;
-    for(int g = 0 ; g < state_->getNumClauses() ; g++)
-    {
-      GroundClause* gc = state_->getGndClause(g);
-      gc->print(cout);
-      cout<<endl;
-      /*
-      IntBoolPair* foClauseFreq = gc->getClauseFrequencies();
-      cout<<"foClauseFreq size : "<<foClauseFreq->
-      for(IntBoolPairItr itr = foClauseFreq->begin(); itr != foClauseFreq->end() ; itr++)
-      {
-        cout<<"Ground clause Id : "<<itr->first<<endl;
-        cout<<"Frequency : "<<itr->second.first<<endl;
-        cout<<"flippedWeight : "<<itr->second.second<<endl;
-      }*/
-      for(int i = 0 ; i < gc->getNumGroundPredicates() ; i++)
-        cout<<"predIndex : "<<gc->getGroundPredicateIndex(i)<<endl;
-      cout<<endl;
-    }
+    
     updateWtsForGndPreds(affectedGndPreds, affectedGndPredIndices, 0);
     affectedGndPreds.clear();
     affectedGndPredIndices.clear();

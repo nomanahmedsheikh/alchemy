@@ -74,7 +74,7 @@
 #include "maxwalksat.h"
 #include "bp.h"
 
-const bool dldebug = true;
+const bool dldebug = false;
 const double EPSILON = .00001;
 
 #ifndef PI
@@ -1569,7 +1569,6 @@ class DiscriminativeLearner
       {
         VariableState* state = inferences_[i]->getState();
         state->setGndClausesWtsToSumOfParentWts();
-        state->updateFlatRealWts();
         // MWS: Search is started from state at end of last iteration
         state->init();
         inferences_[i]->infer();
