@@ -414,26 +414,16 @@ class MRF
     int numGroundPredicates = gcArg->getNumGroundPredicates();
     for(int n = 0 ; n < numGroundPredicates ; n++)
     {
-      if(mrfdebug)
-      {
-        cout<<"n : "<<n<<endl;
-        cout<<"printing realGndClauses set : "<<endl;
-        for(GroundClauseSet::iterator iter = realGndClausesSet->begin() ; iter != realGndClausesSet->end() ; iter++)
-        {
-          (*iter)->print(cout);
-          cout<<endl;
-        }
-      }
       const GroundPredicate* gndPred = gcArg->getGroundPredicate(n,gndPreds);
       
       if(gndPred->getPredName(db->getDomain()) == "subtype")
       {
         subTypeIndices[0] = n;
-        if(mrfdebug)cout<<"subtype size is : "<<subTypeIndices.size()<<endl;
+        //if(mrfdebug)cout<<"subtype size is : "<<subTypeIndices.size()<<endl;
         GroundClause *newgc = new GroundClause(gcArg, gndPreds, subTypeIndices);
         if(mrfdebug)
         {
-          cout<<"printing newgc : "<<endl;
+          cout<<"subtype found, printing newgc : "<<endl;
           newgc->print(cout);
           cout<<endl;
         }
@@ -448,43 +438,60 @@ class MRF
         {
           if(mrfdebug)cout<<"This piece has already come..."<<endl;
           groundClausesAppended.append(*iter); 
-          if(mrfdebug)cout<<"This piece has been appended.."<<endl;
+          //if(mrfdebug)cout<<"This piece has been appended.."<<endl;
           delete newgc;
         }
-        if(mrfdebug)cout<<"numRealGndClauses : "<<numRealGndClauses<<endl;
         numRealGndClauses++;
-        if(mrfdebug)cout<<"numRealGndClauses : "<<numRealGndClauses<<endl;
       }
       else
       {
         normalIndices.append(n);
       }
     }
+    
     if(mrfdebug)cout<<"normalIndices created succesfully..."<<endl;
     GroundClause *newgc = new GroundClause(gcArg, gndPreds, normalIndices);
     GroundClauseSet::iterator iter = realGndClausesSet->find(newgc);
     if(iter == realGndClausesSet->end())
     {
-      if(mrfdebug)cout<<"This piece comes first time..."<<endl;
+      if(mrfdebug)cout<<"nonsubtype clause, piece comes first time..."<<endl;
       groundClausesAppended.append(newgc);
       realGndClausesSet->insert(newgc);
     }
     else
     {
-      if(mrfdebug)cout<<"This piece has already come..."<<endl;
+      if(mrfdebug)cout<<"non subtype clause, piece has already come..."<<endl;
       groundClausesAppended.append(*iter);
       delete newgc; 
     }
     numRealGndClauses++;
-    
-    if(mrfdebug){cout<<"numRealGndClauses : "<<numRealGndClauses<<endl;}
+    if(mrfdebug)
+    {
+      cout<<"printing realGndClauses set after adding new pieces : "<<endl;
+      for(GroundClauseSet::iterator iter = realGndClausesSet->begin() ; iter != realGndClausesSet->end() ; iter++)
+      {
+        (*iter)->print(cout);
+        cout<<endl;
+      }
+    }
+    if(mrfdebug){cout<<"numRealGndClauses : "<<numRealGndClauses<<", now updating wts, freq and divide factors..."<<endl;}
     for(int k = 0 ; k < numRealGndClauses; k++)
     {
-      const pair<int,bool>* clauseFrequencyPair = groundClausesAppended[k]->getClauseFrequencyPair(clauseno);
-      bool invertWt = clauseFrequencyPair->second;
-      groundClausesAppended[k]->incrementClauseFrequency(clauseno, 1, invertWt);
-      groundClausesAppended[k]->updateDivideFactor(clauseno, numRealGndClauses);
-      cout<<"k : "<<k<<", info updated"<<endl;
+      groundClausesAppended[k]->addWt((gcArg->getWt())/numRealGndClauses);
+      if(mrfdebug)
+      {
+        cout<<"k : "<<k<<endl;
+        cout<<"wt : "<<groundClausesAppended[k]->getWt()<<endl;
+      }
+      if(parentWtPtr)
+      {
+        const pair<int,bool>* clauseFrequencyPair = gcArg->getClauseFrequencyPair(clauseno);
+        bool invertWt = clauseFrequencyPair->second;
+        if(clauseFrequencyPair->first == 0)
+          delete clauseFrequencyPair;
+        groundClausesAppended[k]->incrementClauseFrequency(clauseno, 1, invertWt);
+        groundClausesAppended[k]->updateDivideFactor(clauseno, numRealGndClauses);
+      }
     }
   }
 
@@ -587,6 +594,7 @@ class MRF
       gndClausesSet->insert(gndClause);
       gndClauses->append(gndClause);
       gndClause->appendToGndPreds(gndPreds);
+      if(mrfdebug) cout<<"parentWtPtr : "<<parentWtPtr<<endl;
         // gndClause's wt is set when it was constructed
       if (parentWtPtr)
         gndClause->incrementClauseFrequency(clauseId, 1, invertWt);
@@ -613,6 +621,9 @@ class MRF
     else
     {
       if(mrfdebug)cout<<"Big ground clause already havs appeared..."<<endl;
+      (*iter)->addWt(gndClause->getWt());
+      if (parentWtPtr)
+        gndClause->incrementClauseFrequency(clauseId, 1, invertWt);
       addToRealGndClauses(gndClause, isHardClause, agcs, db);
       delete gndClause;
     }

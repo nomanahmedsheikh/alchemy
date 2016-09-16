@@ -219,9 +219,10 @@ GroundClause::GroundClause(const Clause* const & c,
 
 GroundClause::GroundClause(const GroundClause* const & gc, 
                            GroundPredicateHashArray* const & gndPredHashArray, Array<int> &predIndices) 
-  : wt_(gc->getWt()), foClauseFrequencies_(NULL)
+  : wt_(0.0), foClauseFrequencies_(NULL)
 {
   divideFactors_ = new map<int,double>();
+  /*
   if(gc->foClauseFrequencies_)
   {
     foClauseFrequencies_ = new IntBoolPair;
@@ -232,8 +233,9 @@ GroundClause::GroundClause(const GroundClause* const & gc,
       bool invertWt = itr->second.second;
       foClauseFrequencies_->insert(make_pair(clauseno, make_pair(freq, invertWt))); 
     }
+    if(gcdebug) cout<<"foClauseFrequencies_ of new piece is created and size is : "<<foClauseFrequencies_->size()<<endl;
   }
-  
+  */
   int numPreds = predIndices.size();
   if (gcdebug) cout<<"numPreds : "<<numPreds<<endl;
   gndPredIndexes_ = new Array<int>;

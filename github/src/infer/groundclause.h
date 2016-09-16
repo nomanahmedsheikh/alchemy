@@ -197,19 +197,22 @@ class GroundClause
     return foClauseFrequencies_;
   }
 
-  const pair<int,bool>* getClauseFrequencyPair(int clauseno)
+  const pair<int,bool>* getClauseFrequencyPair(int clauseno) const
   {
-    if (!foClauseFrequencies_) return 0;
+  	pair<int,bool>* result = new pair<int,bool>(); //caller is responsible for deletion if frequency is zero
+    result->first = 0;
+    result->second = false;
+    if (!foClauseFrequencies_) return result;
     IntBoolPairItr itr = foClauseFrequencies_->find(clauseno);
     if (itr == foClauseFrequencies_->end())
     {
-      pair<int,bool>* result = new pair<int,bool>(); //caller is responsible for deletion if frequency is zero
-      result->first = 0;
-      result->second = false;
       return result;
     }
     else
-      return &(itr->second);
+    {
+    	delete result;
+      	return &(itr->second);
+    }
   }
 
   int getClauseFrequency(int clauseno)

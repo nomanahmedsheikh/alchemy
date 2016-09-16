@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = true;
+const bool vsdebug = false;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
