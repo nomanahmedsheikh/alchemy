@@ -163,6 +163,14 @@ class MaxWalkSat : public SAT
       // Init changed array if using tabu
     if (heuristic_ == TABU || heuristic_ == SS)
     {
+      if(heuristic_ == TABU)
+      {
+        if(mwsdebug)cout<<"heuristic is tabu..."<<endl;
+      }
+      if(heuristic_ == SS)
+      {
+        if(mwsdebug)cout<<"heuristic is ss..."<<endl;
+      }
       int numAtoms = state_->getNumAtoms();
       if (changed_.size() != numAtoms + 1)
       {
@@ -221,7 +229,17 @@ class MaxWalkSat : public SAT
       while (numFlips_ < maxSteps_ && numsuccesstry < numSolutions_)
       {
         numFlips_++;
+        if(mwsdebug)
+        {
+          cout << "current state before flipping:" << endl;
+          state_->printCurrentState(cout);
+        }
         flipAtom((this->*(pickcode[heuristic_]))());
+        if(mwsdebug)
+        {
+          cout << "current state after flipping:" << endl;
+          state_->printCurrentState(cout);
+        }
           // If in a block, then another atom was also chosen to flip
         if (inBlock_ > -1)
         {
@@ -289,7 +307,10 @@ class MaxWalkSat : public SAT
 
       // If keeping track of true clause groundings
     if (trackClauseTrueCnts_)
+    {
+      if(mwsdebug) cout<<"calling tallyCntsFromState()..."<<endl;
       tallyCntsFromState();
+    }
   }
 
   const int getHeuristic()
@@ -332,9 +353,14 @@ class MaxWalkSat : public SAT
    */
   void flipAtom(int toFlip)
   {
-    //if (mwsdebug) cout << "Entering MaxWalkSat::flipAtom" << endl;
+    if (mwsdebug) cout << "Entering MaxWalkSat::flipAtom : " << endl;
+
     if (toFlip == NOVALUE)
+    {
+      if(mwsdebug)cout<<"nothing to be flipped...."<<endl;
       return;
+    }
+      
 
       // Flip the atom in the state
     state_->flipAtom(toFlip, inBlock_);

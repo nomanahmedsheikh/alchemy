@@ -450,6 +450,7 @@ class Inference
 
   void tallyCntsFromState()
   {
+    //cout<<"saveAllCounts_ : "<<saveAllCounts_<<endl;
     int numcounts = clauseTrueCnts_->size();
     Array<double> currCounts(numcounts, 0.0);
     state_->getNumClauseGndings(&currCounts, true);

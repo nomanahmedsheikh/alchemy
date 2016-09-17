@@ -329,7 +329,7 @@ class VariableState
    */
   void init()
   {
-      // Initialize info arrays
+      // Initialize info arrays  
     initMakeBreakCostWatch();
   }
 
@@ -377,6 +377,7 @@ class VariableState
       // If performing SampleSat, do a run of UP
   	if (inferenceMode_ == MODE_SAMPLESAT)
   	{
+      if(vsdebug) cout<<"Inference Mode is sample sat..."<<endl;
       unitPropagation();
     }
 
@@ -2126,12 +2127,15 @@ class VariableState
    */
   void saveLowState()
   {
+    /*
+    commented by Happy
+    
     if (vsdebug) cout << "Saving low state: " << endl;
     for (int i = 1; i <= getNumAtoms(); i++)
     {
       lowAtom_[i] = atom_[i];
       if (vsdebug) cout << lowAtom_[i] << endl;
-    }
+    }*/
     lowCost_ = costOfFalseClauses_;
     lowBad_ = numFalseClauses_;
   }
@@ -2249,7 +2253,7 @@ class VariableState
     
     for (int i = 0; i < originalGndClauses_.size(); i++)
     {
-      GroundClause *gndClause = (*gndClauses_)[i];
+      GroundClause *gndClause = originalGndClauses_[i];
       int satLitcnt = 0;
       int subtypeUnsatLitcnt = 0;
       for (int j = 0; j < gndClause->getNumGroundPredicates(); j++)
@@ -2258,7 +2262,7 @@ class VariableState
         const GroundPredicate* gndPred = gndClause->getGroundPredicate(j,&gndPredHashArray_);
         if(gndPred->getPredName(domain_) == "subtype")
         {
-          if (isTrueLiteral(lit)) subtypeUnsatLitcnt++;  
+          if (!isTrueLiteral(lit)) subtypeUnsatLitcnt++;  
         }
         else
         {
@@ -2369,23 +2373,32 @@ class VariableState
     for (int clauseno = 0; clauseno < clauseCnt; clauseno++)
       numGndings[clauseno] = 0;
     
-    for (int i = 0; i < gndClauses_->size(); i++)
+    for (int i = 0; i < originalGndClauses_.size(); i++)
     {
-      GroundClause *gndClause = (*gndClauses_)[i];
+      GroundClause *gndClause = originalGndClauses_[i];
       if(vsdebug) gndClause->print(cout);
       int satLitcnt = 0;
+      int subtypeUnsatLitcnt = 0;
       bool unknown = false;
       for (int j = 0; j < gndClause->getNumGroundPredicates(); j++)
       {
         int lit = gndClause->getGroundPredicateIndex(j);
+        const GroundPredicate* gndPred = gndClause->getGroundPredicate(j,&gndPredHashArray_);
         if(vsdebug)cout<<"lit : "<<lit<<endl;
         if ((*unknownPred)[abs(lit) - 1])
         {
           unknown = true;
           continue;
         }
-        if (isTrueLiteral(lit)) satLitcnt++;
-        if(vsdebug)cout<<"satLitcnt : "<<satLitcnt<<endl;
+        if(gndPred->getPredName(domain_) == "subtype")
+        {
+          if (!isTrueLiteral(lit)) subtypeUnsatLitcnt++;  
+        }
+        else
+        {
+          if (isTrueLiteral(lit)) satLitcnt++;  
+        }
+        if(vsdebug)cout<<"satLitcnt : "<<satLitcnt<<", subTypeUnsatLitCnt : "<<subtypeUnsatLitcnt<<endl;
       }
 
       clauseFrequencies = gndClause->getClauseFrequencies();
@@ -2399,19 +2412,19 @@ class VariableState
         if (invertWt)
         {
             // Want true and is true or unknown => don't count it
-          if (tv && (satLitcnt > 0 || unknown))
+          if (tv && ((satLitcnt > 0 && subtypeUnsatLitcnt == 0) || unknown))
             continue;
             // Want false and is false => don't count it
-          if (!tv && satLitcnt == 0)
+          if (!tv && (satLitcnt == 0 || subtypeUnsatLitcnt > 0))
             continue;
         }
         else
         {
             // Want true and is false => don't count it
-          if (tv && satLitcnt == 0)
+          if (tv && (satLitcnt == 0 || subtypeUnsatLitcnt > 0))
             continue;
             // Want false and is true => don't count it
-          if (!tv && (satLitcnt > 0 || unknown))
+          if (!tv && ((satLitcnt > 0 && subtypeUnsatLitcnt == 0) || unknown))
             continue;
         }
         numGndings[clauseno] += frequency;
@@ -2788,6 +2801,20 @@ class VariableState
     {
       (*gndPreds_)[i]->print(out, domain_);
       out << " " << lowAtom_[i + 1] << endl;
+    }
+  }
+
+  /**
+   * Prints the current state found to a stream.
+   * 
+   * @param out Stream to which the state is printed.
+   */
+  void printCurrentState(ostream& out)
+  {
+    for (int i = 0; i < getNumAtoms(); i++)
+    {
+      (*gndPreds_)[i]->print(out, domain_);
+      out << " " << atom_[i + 1] << endl;
     }
   }
 

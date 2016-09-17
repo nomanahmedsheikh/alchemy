@@ -86,7 +86,7 @@ typedef IntBoolPair::iterator IntBoolPairItr;
 // Constants
 const double HARD_GROUNDCLAUSE_WT = DBL_MAX; //uncommented by Happy
 //const double HARD_GROUNDCLAUSE_WT = 100; // commented by Happy
-const bool gcdebug = true;
+const bool gcdebug = false;
 
 // Forward declarations
 class MLN;
@@ -114,11 +114,8 @@ class GroundClause
 
   ~GroundClause()
   {
-    if(gcdebug)cout<<"destructor called..."<<endl;
     if (gndPredIndexes_) delete gndPredIndexes_;
-    if(gcdebug)cout<<"gndPredIndexes deleted..."<<endl;
     if (foClauseFrequencies_) delete foClauseFrequencies_;
-    if(gcdebug)cout<<"foclauseFrequencies deleted..."<<endl;
   }
 
   void deleteFoClauseFrequencies()

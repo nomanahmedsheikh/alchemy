@@ -136,11 +136,16 @@ class MCSAT : public MCMC
 
       // Initialize with MWS
     mws_->init();
+    if (msdebug) 
+    {
+      cout << "Low state after mws->init() :" << endl;
+      state_->printLowState(cout);
+    }
     mws_->infer();
 
     if (msdebug) 
     {
-      cout << "Low state:" << endl;
+      cout << "Low state after mws->infer():" << endl;
       state_->printLowState(cout);
     }
     state_->saveLowStateToGndPreds();
@@ -337,7 +342,6 @@ class MCSAT : public MCMC
       GroundPredicate* gndPred = state_->getGndPred(i);
       //cout<<"name of ground atom : "<<gndPred->getPredicateStr(state_->getDomain()); // called by Happy
       bool newAssignment = state_->getValueOfLowAtom(i + 1);
-      //cout<<" : "<<newAssignment<<endl; // added by happy
       
         // No need to update weight but still need to update truth/NumSat
       if (newAssignment != gndPred->getTruthValue())
