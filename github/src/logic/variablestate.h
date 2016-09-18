@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = false;
+const bool vsdebug = true;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
@@ -126,8 +126,8 @@ class VariableState
                 const MLN* const & mln, const Domain* const & domain,
                 const bool& lazy)
   {
-    if(vsdebug)cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
-    if(vsdebug)cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
+    //if(vsdebug)cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
+    //if(vsdebug)cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
     stillActivating_ = true;
     breakHardClauses_ = false;
       // By default MaxWalkSAT mode

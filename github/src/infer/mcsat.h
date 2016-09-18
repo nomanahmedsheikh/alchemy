@@ -72,7 +72,7 @@
 #include "unitpropagation.h"
 #include "maxwalksat.h"
 
-const int msdebug = false;
+const int msdebug = true;
 
 /**
  * MC-SAT is an MCMC inference algorithm designed to deal efficiently with
@@ -353,8 +353,10 @@ class MCSAT : public MCMC
         // If in actual sampling phase, track the num of times
         // the ground predicate is set to true
       if (!burningIn && newAssignment) numTrue_[i]++;
+      cout<<"gndPred : ";gndPred->print(cout);cout<<", numTrue : "<<numTrue_[i]<<endl; // added By Happy
     }
     
+    cout<<"trackClauseTrueCnts_ : "<<trackClauseTrueCnts_<<endl;//added by Happy
       // If keeping track of true clause groundings
     if (!burningIn && trackClauseTrueCnts_)
       tallyCntsFromState();

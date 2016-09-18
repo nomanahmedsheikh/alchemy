@@ -416,7 +416,7 @@ class MRF
     {
       const GroundPredicate* gndPred = gcArg->getGroundPredicate(n,gndPreds);
       
-      if(gndPred->getPredName(db->getDomain()) == "subtype")
+      if((gndPred->getPredName(db->getDomain()) == "subtype") && !isHardClause)
       {
         subTypeIndices[0] = n;
         //if(mrfdebug)cout<<"subtype size is : "<<subTypeIndices.size()<<endl;
@@ -548,14 +548,17 @@ class MRF
     for(int i = 0 ; i < gndClause->getNumGroundPredicates() ; i++)
     {
       const GroundPredicate* gp = gndClause->getGroundPredicate(i, gndPreds);
-      if(gp->getPredName(db->getDomain()) != "subtype")
+      if(gp->getPredName(db->getDomain()) != "subtype" || isHardClause)
       {
         allPredsSubtype = false;
         break;
       }
     }
     if(allPredsSubtype)
+    {
+      delete gndClause;
       return;
+    }
 
     if(mrfdebug)
     {
