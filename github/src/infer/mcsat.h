@@ -72,7 +72,7 @@
 #include "unitpropagation.h"
 #include "maxwalksat.h"
 
-const int msdebug = true;
+const int msdebug = false;
 
 /**
  * MC-SAT is an MCMC inference algorithm designed to deal efficiently with
@@ -136,11 +136,7 @@ class MCSAT : public MCMC
 
       // Initialize with MWS
     mws_->init();
-    if (msdebug) 
-    {
-      cout << "Low state after mws->init() :" << endl;
-      state_->printLowState(cout);
-    }
+    
     mws_->infer();
 
     if (msdebug) 
@@ -224,8 +220,8 @@ class MCSAT : public MCMC
         cout << "Sample (per pred) " << sample << ", time elapsed = ";
         Timer::printTime(cout, secondsElapsed);
         cout << ", num. preds = " << state_->getNumAtoms();
-		cout << ", num. clauses = " << state_->getNumClauses();
-		cout << endl;		
+		    cout << ", num. clauses = " << state_->getNumClauses();
+		    cout << endl;		
       }
 
         // For each node, generate the node's new truth value
@@ -340,7 +336,7 @@ class MCSAT : public MCMC
     for (int i = 0; i < numAtoms; i++)
     {
       GroundPredicate* gndPred = state_->getGndPred(i);
-      //cout<<"name of ground atom : "<<gndPred->getPredicateStr(state_->getDomain()); // called by Happy
+    
       bool newAssignment = state_->getValueOfLowAtom(i + 1);
       
         // No need to update weight but still need to update truth/NumSat
@@ -353,10 +349,9 @@ class MCSAT : public MCMC
         // If in actual sampling phase, track the num of times
         // the ground predicate is set to true
       if (!burningIn && newAssignment) numTrue_[i]++;
-      cout<<"gndPred : ";gndPred->print(cout);cout<<", numTrue : "<<numTrue_[i]<<endl; // added By Happy
     }
     
-    cout<<"trackClauseTrueCnts_ : "<<trackClauseTrueCnts_<<endl;//added by Happy
+    
       // If keeping track of true clause groundings
     if (!burningIn && trackClauseTrueCnts_)
       tallyCntsFromState();

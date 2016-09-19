@@ -74,7 +74,7 @@ const int NOVALUE = 100000000;
 const int DISANDCONT = 200000000;
 const int MULTIDIS = 300000000;
 const double NOSOL = 1234567890;
-const bool vsdebug = true;
+const bool vsdebug = false;
 
 /**
  * Represents the state of propositional variables and clauses. Some of this
@@ -126,8 +126,7 @@ class VariableState
                 const MLN* const & mln, const Domain* const & domain,
                 const bool& lazy)
   {
-    //if(vsdebug)cout<<"unknownQueries size : "<<unknownQueries->size()<<endl; //added by Happy
-    //if(vsdebug)cout<<"knownQueries size : "<<knownQueries->size()<<endl; //added by Happy
+    
     stillActivating_ = true;
     breakHardClauses_ = false;
       // By default MaxWalkSAT mode
@@ -252,12 +251,15 @@ class VariableState
       for (int i = 0; i < gndPreds->size(); i++)
         gndPredHashArray_.append((*gndPreds)[i]);
     
+      /*
+       * Added by Happy
       cout<<"Printing all ground clauses : "<<endl;
       for(int z = 0 ; z < newClauses_.size() ; z++)
       {
           (newClauses_[z])->printWithWtAndStrVar(cout,domain_,&gndPredHashArray_);
           cout<<endl;
       }
+      */
         // baseNumAtoms_ are all atoms in eager version
       baseNumAtoms_ = gndPredHashArray_.size();        
     } // End eager version
@@ -442,7 +444,12 @@ class VariableState
         }
       }
     }
-
+    if(vsdebug)
+    {
+      cout<<"current state is : "<<endl;
+      printCurrentState(cout);
+      cout<<endl;
+    }
     init();	
   }
 
@@ -2127,15 +2134,13 @@ class VariableState
    */
   void saveLowState()
   {
-    /*
-    commented by Happy
     
     if (vsdebug) cout << "Saving low state: " << endl;
     for (int i = 1; i <= getNumAtoms(); i++)
     {
       lowAtom_[i] = atom_[i];
       if (vsdebug) cout << lowAtom_[i] << endl;
-    }*/
+    }
     lowCost_ = costOfFalseClauses_;
     lowBad_ = numFalseClauses_;
   }
@@ -2364,8 +2369,7 @@ class VariableState
                                       const Array<bool>* const& unknownPred)
   {
     // TODO: lazy version
-    //cout<<"unknownPredSize : "<<unknownPred->size()<<endl; // happy
-    //cout<<"getNumAtoms : "<<getNumAtoms()<<endl; // happy
+    
     assert(unknownPred->size() == getNumAtoms());
     IntBoolPairItr itr;
     IntBoolPair *clauseFrequencies;

@@ -75,7 +75,7 @@
 #include "mln.h"
 #include "groundpredicate.h"
 
-const bool mrfdebug = true;
+const bool mrfdebug = false;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -146,8 +146,7 @@ class MRF
       cout<<"initialization done..."<<endl;
 	
       //add GroundPredicates in queries to unseenPreds
-    //cout<<"adding GroundPredicates in queries to unseenPreds"<<endl; //added by Happy
-    if(mrfdebug) cout<<"Number of queries : "<<queries->size()<<endl; //added by Happy
+    
     for (int i = 0; i < queries->size(); i++)
     {
       GroundPredicate* gp = (*queries)[i];
@@ -156,7 +155,7 @@ class MRF
       assert(gndPredsMap.find(gp) == gndPredsMap.end());
       gndPredsMap[gp] = gndPredIdx;
     }
-    //cout<<"added GroundPredicates in queries to unseenPreds"<<endl; //added by Happy
+
       // If too much memory to build MRF then destroy it
     if (memLimit > 0)
     {
@@ -576,8 +575,7 @@ class MRF
       gndClause->setWt(-gndClause->getWt());
       invertWt = true;
     }
-    //gndClause->parentFormulaId_ = clause->parentFormulaId_; // added by Happy
-    //cout<<"set parentFormulaId_ to : "<<gndClause->parentFormulaId_<<endl; // added by Happy
+    
     GroundClauseSet::iterator iter = gndClausesSet->find(gndClause);
     if(mrfdebug)
     {

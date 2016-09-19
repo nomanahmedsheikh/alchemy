@@ -276,7 +276,9 @@ class MaxWalkSat : public SAT
           }
           lowCost = costOfFalseClauses;
           if (!lazyLowState_)
+          {
             state_->saveLowState();
+          }
           else
           {
             varsFlippedSinceLowState_.clear();
