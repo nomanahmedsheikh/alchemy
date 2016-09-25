@@ -649,7 +649,7 @@ class DiscriminativeLearner
       // Set the weights and run inference
       setMLNWeights(weights);
 
-      if (withEM_) fillInMissingValues();
+      if (withEM_) fillInMissingValues(iter, true);
       cout << "Running inference ..." << endl;
       infer();
       cout << "Done with inference" << endl;
@@ -1587,7 +1587,7 @@ class DiscriminativeLearner
    * Infers values for predicates with unknown truth values and uses these
    * values to compute the training counts.
    */
-  void fillInMissingValues()
+  void fillInMissingValues(int iter, bool prior = false)
   {
     assert(withEM_);
     cout << "Filling in missing data ..." << endl;
@@ -1611,7 +1611,10 @@ class DiscriminativeLearner
         // MWS: Search is started from state at end of last iteration
       emState->init();
       emInferences_[i]->infer();
-      emState->saveLowStateToGndPreds();
+      if(prior == true && iter == 0)
+      	emState->savePriorSubtypeStateToGndPreds();
+      else
+      	emState->saveLowStateToGndPreds();
 
       if (dldebug)
       {

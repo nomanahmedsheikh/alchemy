@@ -75,7 +75,7 @@
 #include "mln.h"
 #include "groundpredicate.h"
 
-const bool mrfdebug = false;
+const bool mrfdebug = true;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -90,12 +90,12 @@ struct AddGroundClauseStruct
                         Array<GroundClause*>* const & ggndClauses,
                         const bool& mmarkHardGndClauses,
                         const double* const & pparentWtPtr,
-                        const int & cclauseId)
+                        const int & cclauseId, const bool &wwithEM)
     : seenPreds(sseenPreds), unseenPreds(uunseenPreds), gndPreds(ggndPreds),
       allPredGndingsAreQueries(aallPredGndingsAreQueries),
       gndClausesSet(ggndClausesSet), realGndClausesSet(rrealGndClausesSet),
       gndClauses(ggndClauses), markHardGndClauses(mmarkHardGndClauses),
-      parentWtPtr(pparentWtPtr), clauseId(cclauseId) {}
+      parentWtPtr(pparentWtPtr), clauseId(cclauseId), withEM(wwithEM) {}
   
   ~AddGroundClauseStruct() {}
   
@@ -109,6 +109,7 @@ struct AddGroundClauseStruct
   const bool markHardGndClauses;
   const double* parentWtPtr;
   const int clauseId;
+  bool withEM;
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -136,7 +137,8 @@ class MRF
     gndPreds_ = new GroundPredicateHashArray;
     gndClauses_ = new Array<GroundClause*>;
     flatRealGndClauses_ = new Array<GroundClause*>;
-    
+    withEM_ = false;
+
     int numFirstOrderClauses = mln->getNumClauses();
     
     //reverseMap = new Array<Array<Array<int>*>*>();
@@ -228,7 +230,7 @@ class MRF
                                   allPredGndingsAreQueries,
                                   &gndClausesSet, &realGndClausesSet, gndClauses_,
                                   markHardGndClauses, parentWtPtr,
-                                  clauseId);
+                                  clauseId, withEM_);
         //cout << "Happy number of grounded clauses = " << gndClauses_->size() << endl; //added by Happy
     	try
         {
@@ -511,6 +513,7 @@ class MRF
     const bool markHardGndClauses           = agcs->markHardGndClauses;
     const double* parentWtPtr               = agcs->parentWtPtr;
     const int clauseId                      = agcs->clauseId;
+    const bool withEM = agcs->withEM;
 
     // Check none of the grounded clause's predicates have been seen before.
     // If any of them have been seen before, this clause has been created 
@@ -547,7 +550,7 @@ class MRF
     for(int i = 0 ; i < gndClause->getNumGroundPredicates() ; i++)
     {
       const GroundPredicate* gp = gndClause->getGroundPredicate(i, gndPreds);
-      if(gp->getPredName(db->getDomain()) != "subtype" || isHardClause)
+      if(gp->getPredName(db->getDomain()) != "subtype" || isHardClause || withEM)
       {
         allPredsSubtype = false;
         break;
@@ -695,6 +698,7 @@ class MRF
     return gndClauses_->size();
   }
 
+  bool withEM_;
  private:
   GroundPredicateHashArray* gndPreds_;
   //GroundPredicateHashArray* realGndPreds_;

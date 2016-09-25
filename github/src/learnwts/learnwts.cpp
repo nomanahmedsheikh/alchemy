@@ -580,7 +580,7 @@ int main(int argc, char* argv[])
     cout << "ERROR: unable to open " << outMLNFile << endl;
     return -1;
   }
-
+  
     // Parse the inference parameters, if given
   if (discLearn)
   {
@@ -993,6 +993,24 @@ int main(int argc, char* argv[])
           emState = new VariableState(unePreds, NULL, NULL,
                                   &allPredGndingsAreNonEvid, markHardGndClauses,
                                   trackParentClauseWts, mln, domain, aLazy);
+          StringSet *priorSubtypes = emState->getPriorSubtypes();
+          emState->withEM_ = true;
+          std::string outmlnfile(outMLNFile);
+          std::string::size_type pos = outmlnfile.find('/');
+          string newDir = outmlnfile.substr(0, pos);
+          string outfilename = outmlnfile.substr(pos+1);
+          pos = outfilename.find('.');
+          string fold = outfilename.substr(pos+1,1);
+          string subtypeFileName = newDir+"/clusters/subtype."+fold+".txt";
+          ifstream subtypeFile(subtypeFileName.c_str());
+          string line;
+          while(getline(subtypeFile, line))
+          {
+            cout<<line<<endl;
+          }
+          subtypeFile.close();
+          char c;cin>>c;
+          
         }
 
           // Pred values not set to unknown in DB: unePreds contains

@@ -145,10 +145,12 @@ class VariableState
     costOfFalseClauses_ = 0.0;
     lowCost_ = LDBL_MAX;
     lowBad_ = INT_MAX;
+    withEM_ = false;
 
       // Clauses and preds are stored in gndClauses_ and gndPreds_
     gndClauses_ = new GroundClauseHashArray;
     gndPreds_ = new Array<GroundPredicate*>;
+    priorSubtypes = new StringSet();
 
       // Set the hard clause weight
     setHardClauseWeight();
@@ -233,6 +235,7 @@ class VariableState
       mrf_ = new MRF(queries, allPredGndingsAreQueries, domain_,
                      domain_->getDB(), mln_, markHardGndClauses,
                      trackParentClauseWts, -1);
+      mrf_->withEM_ = withEM_;
 
         //delete to save space. Can be deleted because no more gndClauses are
         //appended to gndPreds beyond this point
@@ -283,6 +286,7 @@ class VariableState
    */ 
   ~VariableState()
   {
+    delete priorSubtypes;
     if (lazy_)
     {
       if (gndClauses_)
@@ -3039,6 +3043,26 @@ class VariableState
       (*gndPreds_)[i]->setTruthValue(lowAtom_[i + 1]);
   }
 
+  StringSet* getPriorSubtypes()
+  {
+    return priorSubtypes;
+  }
+  /**
+   * The prior atom assignment given in database file is saved to the ground predicates.
+   */
+  void savePriorSubtypeStateToGndPreds()
+  {
+    for (int i = 0; i < getNumAtoms(); i++)
+    {
+      string s = (*gndPreds_)[i]->getPredString(domain_);
+      StringSet::iterator it = priorSubtypes->find(s);
+      if(it == priorSubtypes->end())
+        (*gndPreds_)[i]->setTruthValue(false);
+      else
+        (*gndPreds_)[i]->setTruthValue(true);
+    }
+  }
+
   /**
    * The atom assignment in the best state is saved to the database.
    */
@@ -3327,6 +3351,7 @@ class VariableState
   const static int ADD_CLAUSE_REGULAR = 1;
   const static int ADD_CLAUSE_DEAD = 2;
   const static int ADD_CLAUSE_SAT = 3;    // the clauses are sat by fixed atoms
+  bool withEM_;
 
  private:
     // If true, this is a lazy variable state, else eager.
@@ -3466,6 +3491,10 @@ class VariableState
   
     // If true, hard clauses can be broken
   bool breakHardClauses_;
+
+  // Set of subtype ground preds
+  StringSet *priorSubtypes;
+
 
 };
 
